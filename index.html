@@ -482,9 +482,12 @@
   }
 
   /* ---------- Linear + my tasks ---------- */
+  // Statuses to leave off the to-do list (matched by name, ignoring case).
+  const HIDDEN_STATUSES = ['needs product review'];
   function normIssues(p) {
     const list = (p && p.issues) || [];
     return list.filter((i) => !['completed', 'canceled', 'cancelled', 'duplicate'].includes((i.statusType || '').toLowerCase()))
+      .filter((i) => !HIDDEN_STATUSES.includes(String((i.status && i.status.name) || i.status || '').trim().toLowerCase()))
       .map((i) => ({
         key: 'lin:' + i.id, source: 'linear', id: i.id, title: i.title, url: i.url,
         priority: (i.priority && typeof i.priority === 'object') ? i.priority.value : (i.priority || 0),
@@ -706,7 +709,7 @@ Last line: the one thing to finish before stopping.`;
       onError: (node, authz) => { if (authz || !state.weekEvents) { $('week-state').hidden = false; $('week-state').replaceChildren(node); } } });
 
     source({ server: 'Linear', tool: 'list_issues', dot: 'dot-lin',
-      input: { assignee: 'me', limit: 50, orderBy: 'updatedAt', fields: ['title', 'url', 'status', 'statusType', 'priority', 'dueDate', 'updatedAt', 'team'] },
+      input: { assignee: 'me', limit: 100, orderBy: 'updatedAt', fields: ['title', 'url', 'status', 'statusType', 'priority', 'dueDate', 'updatedAt', 'team'] },
       onData: (p) => { todoErr = null; state.issues = normIssues(p); renderTodo(); },
       onError: (node, authz) => { todoErr = node; if (authz) state.issues = []; renderTodo(todoErr); } });
 
