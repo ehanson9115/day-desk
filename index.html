@@ -111,7 +111,7 @@
   .ev { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; padding: 10px 8px; border-radius: 8px; align-items: start; }
   .ev + .ev { border-top: 1px solid var(--line); border-radius: 0; }
   .ev .t { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; line-height: 1.35; }
-  .ev .title { font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+  .ev .title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
   .ev .meta { font-size: 12.5px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; margin-top: 2px; align-items: center; }
   .ev.past .title, .ev.past .t { color: var(--muted); font-weight: 400; }
   .ev.now { background: var(--accent-wash); border-radius: 8px; }
@@ -124,7 +124,7 @@
   .item { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; gap: 10px; padding: 9px 8px; align-items: start; border-radius: 6px; }
   .item:hover { background: var(--ht-surface-component); }
   .item input[type=checkbox] { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--accent); }
-  .item .title { font-size: 14px; overflow-wrap: anywhere; }
+  .item .title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
   .item.done .title { color: var(--muted); text-decoration: line-through; }
   .item .meta { font-size: 12.5px; color: var(--muted); margin-top: 1px; display: flex; gap: 8px; flex-wrap: wrap; }
   .item .del { opacity: 0; border: 0; background: none; color: var(--muted); cursor: pointer; padding: 0 4px; font-size: 16px; line-height: 1; }
@@ -144,7 +144,7 @@
   .mail:hover, .mtg:hover { background: var(--ht-surface-component); text-decoration: none; }
   .mail .from { font-size: 12.5px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
   .mail .subj { font-size: 14px; overflow-wrap: anywhere; }
-  .mtg .title { font-size: 14px; }
+  .mtg .title { font-size: 14px; font-weight: 600; }
   .mtg .when { font-size: 12.5px; color: var(--muted); }
 
   textarea.scratch { width: 100%; min-height: 140px; resize: vertical; border: 1px solid var(--ht-border-component); border-radius: 6px; background: var(--ht-surface-input); padding: 10px; font-size: 14px; line-height: 1.5; }
