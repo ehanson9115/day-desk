@@ -113,7 +113,7 @@
   .link-btn { background: none; border: 0; padding: 0; cursor: pointer; color: var(--accent-text); font-size: 13px; font-weight: 500; }
 
   .brief {
-    background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-bottom: 20px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; margin-bottom: 20px;
     display: grid; gap: 8px;
   }
   .brief-text { white-space: pre-wrap; font-size: 14.5px; line-height: 1.55; max-width: 72ch; }
@@ -130,7 +130,7 @@
 
   .board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
   .col { display: grid; gap: 16px; min-width: 0; }
-  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; min-width: 0; box-shadow: 0 1px 2px color-mix(in oklab, var(--pink-9) 8%, transparent), 0 12px 28px -18px color-mix(in oklab, var(--pink-9) 35%, transparent); }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 6px; min-width: 0; box-shadow: 0 1px 2px color-mix(in oklab, var(--pink-9) 8%, transparent), 0 12px 28px -18px color-mix(in oklab, var(--pink-9) 35%, transparent); }
   /* Cake header: a tinted band on top of the card */
   .panel.cake { overflow: hidden; }
   .panel.cake > .panel-head { background: var(--cake); border-bottom: 1px solid var(--cake-line); color: var(--cake-text); padding: 12px 16px; margin-bottom: 8px; }
@@ -148,13 +148,13 @@
   .allday { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 8px 8px; }
   .chip { font-size: 12.5px; padding: 3px 8px; border-radius: 4px; background: var(--accent-wash); color: var(--ht-action-text-on-tint); }
 
-  .ev { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; padding: 10px 8px; border-radius: 8px; align-items: start; }
+  .ev { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; padding: 10px 8px; border-radius: 6px; align-items: start; }
   .ev + .ev { border-top: 1px solid var(--line); border-radius: 0; }
   .ev .t { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; line-height: 1.35; }
   .ev .title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
   .ev .meta { font-size: 12.5px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; margin-top: 2px; align-items: center; }
   .ev.past .title, .ev.past .t { color: var(--muted); font-weight: 400; }
-  .ev.now { background: var(--accent-wash); border-radius: 8px; }
+  .ev.now { background: var(--accent-wash); border-radius: 6px; }
   .ev.now + .ev { border-top-color: transparent; }
   .pill { font-size: 11px; font-weight: 500; padding: 1px 7px; border-radius: 999px; letter-spacing: .02em; }
   .pill.now { background: var(--accent); color: var(--on-accent); }
@@ -164,7 +164,7 @@
   /* Each task is its own card. Colour = how soon it's due (the chip also says it in words). */
   #todo { display: flex; flex-direction: column; gap: 6px; }
   .item { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; gap: 10px; padding: 10px 10px 10px 12px; align-items: start;
-    border-radius: 8px; border: 1px solid var(--line); background: var(--card); }
+    border-radius: 6px; border: 1px solid var(--line); background: var(--card); }
   .item:hover { background: var(--ht-surface-component); }
   .item.u-late { background: var(--pink-3); border-color: var(--pink-6); }
   .item.u-soon { background: var(--pink-2); border-color: var(--pink-4); }
@@ -213,7 +213,7 @@
   .slk .from { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--muted); }
   .slk .title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   #slk { display: flex; flex-direction: column; gap: 6px; }
-  .slk-act { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; padding: 10px 10px 10px 12px; border-radius: 8px;
+  .slk-act { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; padding: 10px 10px 10px 12px; border-radius: 6px;
     border: 1px solid var(--pink-5); background: var(--pink-2); }
   .slk-act.done { background: var(--card); border-color: var(--line); }
   .slk-act.done .title { color: var(--muted); text-decoration: line-through; }
@@ -223,7 +223,7 @@
   .needs { font-size: 11px; font-weight: 600; color: var(--pink-11); background: var(--pink-4); border-radius: 4px; padding: 0 6px; }
 
   /* Morning brief view */
-  .bf-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-bottom: 20px; }
+  .bf-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; margin-bottom: 20px; }
   .bf-hero .lead { font-size: 14.5px; line-height: 1.55; max-width: 70ch; }
   .meter { height: 8px; border-radius: 999px; background: var(--gray-4); overflow: hidden; margin-top: 10px; max-width: 420px; }
   .meter i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--pink-8, var(--pink-9)), var(--pink-11)); transition: width .3s ease; }
@@ -231,7 +231,7 @@
   .ring small { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-top: 4px; }
   .bf-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
   .bf-list { display: flex; flex-direction: column; gap: 8px; padding: 0 10px 10px; }
-  .bf { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; padding: 12px 12px 12px 10px; border-radius: 10px;
+  .bf { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; padding: 12px 12px 12px 10px; border-radius: 6px;
     background: var(--card); border: 1px solid var(--line); }
   .bf.top { background: var(--pink-2); }
   .bf.done { background: var(--card); }
@@ -244,7 +244,7 @@
   .bf.done .txt a { color: var(--muted); }
   .tag { font-size: 11px; font-weight: 500; border-radius: 4px; padding: 0 6px; background: var(--pink-3); color: var(--pink-11); }
   .tag.plum { background: var(--gray-3); color: var(--gray-12); }
-  .yay { padding: 14px 12px; border-radius: 10px; background: var(--pink-3); color: var(--pink-12); font-size: 13.5px; font-weight: 500; margin: 0 10px 10px; }
+  .yay { padding: 14px 12px; border-radius: 6px; background: var(--pink-3); color: var(--pink-12); font-size: 13.5px; font-weight: 500; margin: 0 10px 10px; }
 
   textarea.scratch { width: 100%; min-height: 140px; resize: vertical; border: 1px solid var(--ht-border-component); border-radius: 6px; background: var(--ht-surface-input); padding: 10px; font-size: 14px; line-height: 1.5; }
   .saved { font-size: 12.5px; color: var(--muted); min-height: 18px; }
@@ -253,15 +253,15 @@
   textarea.scratch { min-height: 96px; }
 
   .state { padding: 12px 8px 14px; font-size: 13.5px; color: var(--muted); display: grid; gap: 8px; justify-items: start; }
-  .state.warn { color: var(--ht-status-warning-text); background: var(--ht-status-warning-wash); border-radius: 8px; margin: 0 8px 8px; }
-  .state.bad { color: var(--ht-status-danger-text); background: var(--ht-status-danger-wash); border-radius: 8px; margin: 0 8px 8px; }
+  .state.warn { color: var(--ht-status-warning-text); background: var(--ht-status-warning-wash); border-radius: 6px; margin: 0 8px 8px; }
+  .state.bad { color: var(--ht-status-danger-text); background: var(--ht-status-danger-wash); border-radius: 6px; margin: 0 8px 8px; }
   .skel { height: 14px; border-radius: 4px; background: var(--ht-surface-component); margin: 10px 8px; }
   .skel.w60 { width: 60% } .skel.w80 { width: 80% } .skel.w40 { width: 40% }
   .stale { font-size: 11px; color: var(--muted); }
 
   /* Week view */
   .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
-  .day { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; min-height: 220px; min-width: 0; }
+  .day { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 10px; min-height: 220px; min-width: 0; }
   .day.today { box-shadow: 0 0 0 2px var(--accent); border-color: transparent; }
   .day h3 { font-size: 12.5px; font-weight: 500; color: var(--muted); margin: 0 0 8px; display: flex; justify-content: space-between; }
   .day h3 b { font-size: 17px; color: var(--fg); font-weight: 500; }
