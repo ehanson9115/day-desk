@@ -842,17 +842,15 @@
   }
   const hash = (t) => { let x = 5381; for (let i = 0; i < t.length; i++) x = ((x << 5) + x + t.charCodeAt(i)) | 0; return (x >>> 0).toString(36); };
 
-  /* Who am I in Slack? The one person who is in every DM the search returned. */
-  function slackMe(list) {
-    let common = null;
-    for (const m of list) {
-      if (!m.people.length) continue;
-      common = common ? common.filter((id) => m.people.includes(id)) : [...m.people];
-    }
-    if (common && common.length === 1) return common[0];
-    const n = {}; let best = null;
-    for (const m of list) for (const id of m.people) if ((n[id] = (n[id] || 0) + 1) > (n[best] || 0)) best = id;
-    return best;
+  /* Who am I in Slack? Asked of Slack itself (the signed-in viewer), never guessed from messages:
+     a guess picks the wrong person when a viewer's recent DMs are mostly with one colleague.
+     Until Slack answers (or if it can't), there is no "me" and the ask lists stay empty. */
+  let slackSelf = null;
+  function slackMe() { return slackSelf; }
+  function parseSlackSelf(p) {
+    const t = typeof p === 'string' ? p : (p && (p.result || p.text)) || '';
+    const m = /User ID:\s*([UW][A-Z0-9]+)/.exec(t);
+    return m ? m[1] : null;
   }
   // An ask = someone else wrote a question or a request. It stays highlighted until you check it off,
   // even if you've replied (the card then says "You replied").
@@ -1107,7 +1105,7 @@ Last line: the one thing to finish before stopping.`;
     let n = 0;
     const mine = (title, done) => ({ key: 'mine:s' + (++n), docId: 's' + n, source: 'mine', title, done: !!done, priority: 0, due: null, updatedAt: new Date() });
     state.myTasks = [mine('Record a 2-minute demo video'), mine('Write the demo script'), mine('Book a room for Friday', true)];
-    state.tasksReady = true;
+    state.tasksReady = true; slackSelf = 'UME';
     state.mail = [
       { viewUrl: '#', messages: [{ sender: 'Design Team <design@example.com>', subject: 'Crit notes from Tuesday', date: at(8, 12).toISOString() }] },
       { viewUrl: '#', messages: [{ sender: 'Project Tracker <noreply@example.com>', subject: 'You were assigned DEMO-14', date: at(7, 40).toISOString() }] },
@@ -1193,6 +1191,10 @@ Last line: the one thing to finish before stopping.`;
       state.issues = []; renderTodo(); $('refresh').hidden = true;
       return;
     }
+    // The viewer's own Slack ID, from their own Slack connector.
+    m.callTool('Slack', 'slack_read_user_profile', { response_format: 'detailed' })
+      .then((r) => { slackSelf = parseSlackSelf(payloadOf(r)); startAskSources(); renderSlack(); renderBrief(); })
+      .catch(() => {});
 
     source({ server: 'Google Calendar', tool: 'list_events', dot: 'dot-cal',
       input: { startTime: localISO(today), endTime: localISO(tomorrow), orderBy: 'startTime', pageSize: 50 },

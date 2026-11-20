@@ -27,7 +27,8 @@ To update the live hub, publish `index.html` with Claude Code's Artifact tool an
     { "server": "Google Calendar", "tools": ["list_events"] },
     { "server": "Linear", "tools": ["list_issues"] },
     { "server": "Gmail", "tools": ["search_threads"] },
-    { "server": "Granola", "tools": ["search_meetings"] }
+    { "server": "Granola", "tools": ["search_meetings"] },
+    { "server": "Slack", "tools": ["slack_search_public_and_private", "slack_read_user_profile"] }
   ]},
   "db": {}, "sample": {}, "user": {}
 }
