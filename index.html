@@ -1083,6 +1083,75 @@ Last line: the one thing to finish before stopping.`;
   /* ---------- boot ---------- */
   const noLive = (box, msg) => box.replaceChildren(h('div', { class: 'state' }, msg));
 
+  // Outside claude.ai (e.g. design.healthytogether.co) there are no connectors: show made-up sample data instead.
+  if (!(window.claude && typeof window.claude.use === 'function')) { bootSample(); return; }
+
+  function bootSample() {
+    const at = (hh, mm, dayOff) => { const d = addDays(today, dayOff || 0); d.setHours(hh, mm, 0, 0); return d; };
+    const onDay = (off, hh, mm) => { const d = addDays(weekStart, off); d.setHours(hh, mm, 0, 0); return d; };
+    const ev = (title, s, e, x) => Object.assign({ id: title + s.getTime(), title, start: s, end: e, allDay: false, link: null, join: null, people: 1, tentative: false, focus: false, ooo: false }, x || {});
+    state.events = [
+      { id: 'ad', title: 'Build day', start: today, end: tomorrow, allDay: true, people: 0 },
+      ev('Design standup', at(9, 30), at(9, 45), { people: 6, join: '#' }),
+      ev('Focus: resident app polish', at(10, 0), at(11, 30), { focus: true }),
+      ev('Product sync', at(11, 30), at(12, 0), { people: 5, join: '#' }),
+      ev('Design critique', at(14, 0), at(15, 0), { people: 4, join: '#', tentative: true }),
+      ev('1:1 with eng lead', at(16, 0), at(16, 30), { people: 2, join: '#' }),
+    ];
+    state.weekEvents = [0, 1, 2, 3, 4].flatMap((d) => [ev('Design standup', onDay(d, 9, 30), onDay(d, 9, 45))])
+      .concat([ev('Sprint planning', onDay(0, 13, 0), onDay(0, 14, 0)), ev('Research readout', onDay(1, 15, 0), onDay(1, 16, 0)),
+        ev('Design critique', onDay(2, 14, 0), onDay(2, 15, 0)), ev('Demo day', onDay(4, 13, 0), onDay(4, 15, 0))]);
+    const iss = (id, title, priority, due, status) => ({ key: 'lin:' + id, source: 'linear', id, title, url: '#', priority, due: due == null ? null : addDays(today, due), status, statusType: 'started', updatedAt: new Date(), done: false });
+    state.issues = [iss('DEMO-9', 'Dark mode contrast pass on cards', 1, 0, 'Todo'), iss('DEMO-14', 'Empty states for the task list', 2, 1, 'In Progress'),
+      iss('DEMO-17', 'Handoff notes for the settings page', 3, 5, 'Todo'), iss('DEMO-21', 'Icon set cleanup', 4, null, 'Backlog')];
+    let n = 0;
+    const mine = (title, done) => ({ key: 'mine:s' + (++n), docId: 's' + n, source: 'mine', title, done: !!done, priority: 0, due: null, updatedAt: new Date() });
+    state.myTasks = [mine('Record a 2-minute demo video'), mine('Write the demo script'), mine('Book a room for Friday', true)];
+    state.tasksReady = true;
+    state.mail = [
+      { viewUrl: '#', messages: [{ sender: 'Design Team <design@example.com>', subject: 'Crit notes from Tuesday', date: at(8, 12).toISOString() }] },
+      { viewUrl: '#', messages: [{ sender: 'Project Tracker <noreply@example.com>', subject: 'You were assigned DEMO-14', date: at(7, 40).toISOString() }] },
+    ];
+    state.meetings = [{ id: 'demo-1', title: 'Weekly design sync', at: at(10, 0, -1) }, { id: 'demo-2', title: 'Research readout', at: at(15, 0, -2) }];
+    const msg = (from, fromId, channel, chName, t, raw, bot) => ({ from, fromId, people: chName ? [] : [fromId, 'UME'], channel, chName, bot: !!bot, ts: String(t.getTime()), url: '#', raw, text: slackText(raw), at: t });
+    state.slack = [
+      msg('Sam Rivera', 'USAM', 'D1', '', at(10, 12), 'Can you send me the updated deck before 3?'),
+      msg('Alex Kim', 'UALX', 'D2', '', at(9, 40), 'Thanks, the new cards look great'),
+      msg('You', 'UME', 'D2', '', at(9, 45), 'Glad it helps!'),
+    ];
+    state.asksDm = [msg('Pat Lee', 'UPAT', 'D3', '', at(9, 0, -2), 'Could you review the onboarding flow when you have a sec?')];
+    state.asksAt = [msg('Jordan Park', 'UJOR', 'C1', '#design', at(17, 0, -1), '<@UME|you> are we good to ship the new empty states?')];
+    state.brief = parseBrief([
+      { bot: true, at: at(8, 0), url: '#', raw: 'First, as promised: at 2:00 you have <#|Design critique>, and the deck still needs your notes.\n\nSam asked for the updated deck before 3. Send it after standup.\n\n2 more are open. Full list in the thread.' },
+      { bot: true, at: at(8, 0), url: '#', raw: '1. Close <#|DEMO-9>. It\'s due today.\n2. Write the demo script for Friday.' },
+    ]);
+    state.github = { syncedAt: at(9, 30).toISOString(), prs: [
+      { repo: 'ht-design', number: 101, title: 'Empty states for the task list', url: '#', why: 'review', author: 'teammate', updatedAt: at(9, 10).toISOString() },
+      { repo: 'ht-design', number: 98, title: 'Dark mode contrast pass', url: '#', why: 'mine', author: 'you', updatedAt: at(8, 50).toISOString() },
+      { repo: 'ht-design', number: 95, title: 'Bump build tooling', url: '#', why: 'repo', author: 'bot', updatedAt: at(7, 0, -1).toISOString() },
+    ] };
+
+    // Interactions stay in this tab only.
+    addTask = async (title) => { state.myTasks.push(mine(title)); renderTodo(); };
+    toggleTask = async (t, done) => { const x = state.myTasks.find((m) => m.key === t.key); if (x) x.done = done; renderTodo(); };
+    deleteTask = async (t) => { state.myTasks = state.myTasks.filter((m) => m.key !== t.key); renderTodo(); };
+    document.addEventListener('click', (e) => { const a = e.target.closest('a[href="#"]'); if (a) e.preventDefault(); });
+
+    document.querySelectorAll('.rail-foot .dot').forEach((d) => { d.className = 'dot warn'; });
+    $('refresh').hidden = true;
+    $('note-save').disabled = true;
+    $('saved').textContent = 'Sample mode: notes aren\'t saved';
+    $('plan').addEventListener('click', () => {
+      $('brief').hidden = false;
+      $('brief-text').textContent = 'A meeting-light afternoon with one long gap after lunch.\n12:00–2:00 Finish DEMO-9, the dark mode contrast pass. It\'s due today.\n3:00–4:00 Sketch the DEMO-14 empty states before critique feedback lands.\n4:30–5:15 Write the demo script and record the video.\nBefore you stop: ship DEMO-9.';
+      $('brief-meta').textContent = 'Sample plan. On claude.ai, Claude writes this from your real day.';
+    });
+    const banner = h('div', { class: 'state warn', role: 'note', style: 'margin:0 0 16px' }, 'Sample data. Open Day Desk on claude.ai to see your own calendar, Slack, Linear, Gmail and GitHub.');
+    $('view-today').insertBefore(banner, $('view-today').querySelector('.stats'));
+
+    renderSchedule(); renderTodo(); renderMail(); renderMeetings(); renderSlack(); renderGitHub(); renderBrief(); renderWeek();
+  }
+
   claude.use('sample').then((s) => { sample = s; if (!s) $('plan').hidden = true; });
 
   Promise.all([claude.use('db'), claude.use('user')]).then(async ([d, u]) => {
