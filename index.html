@@ -21,13 +21,13 @@
   /* Layout: a quiet left rail + a three-column "today" board (schedule · to do · inbox), stacking to one column on phones. */
   :root {
     /* Pink theme: page, borders and washes are tints of the pink accent (Radix pink scale flips in dark). */
-    --bg: color-mix(in oklab, var(--pink-2) 90%, white);
+    --bg: var(--gray-2);
     --card: var(--ht-surface-card);
     --inset: var(--ht-surface-inset);
     --fg: var(--ht-text-body);
     --muted: var(--ht-text-secondary);
-    --line: var(--pink-4);
-    --line-strong: var(--pink-6);
+    --line: var(--gray-4);
+    --line-strong: var(--gray-6);
     --accent: var(--pink-11);
     --accent-hover: var(--pink-12);
     --accent-text: var(--pink-11);
@@ -39,8 +39,8 @@
     --font: var(--font-sans, "Geist", system-ui, -apple-system, sans-serif);
   }
   /* Dark: deep pink page; solid pink keeps contrast with dark text on it. */
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: var(--pink-1); --accent: var(--pink-9); --accent-hover: var(--pink-10); --on-accent: var(--pink-1); --card: color-mix(in oklab, var(--pink-2) 92%, black); color-scheme: dark } }
-  :root[data-theme="dark"] { --bg: var(--pink-1); --accent: var(--pink-9); --accent-hover: var(--pink-10); --on-accent: var(--pink-1); --card: color-mix(in oklab, var(--pink-2) 92%, black); color-scheme: dark }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: var(--gray-1); --accent: var(--pink-9); --accent-hover: var(--pink-10); --on-accent: var(--pink-1); --card: var(--gray-2); color-scheme: dark } }
+  :root[data-theme="dark"] { --bg: var(--gray-1); --accent: var(--pink-9); --accent-hover: var(--pink-10); --on-accent: var(--pink-1); --card: var(--gray-2); color-scheme: dark }
 
   html, body { height: 100%; }
   body {
@@ -53,8 +53,8 @@
   .glow { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
   .glow i { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .63; }
   .glow i:nth-child(1) { width: 520px; height: 520px; left: -120px; top: -160px; background: var(--pink-6); }
-  .glow i:nth-child(2) { width: 460px; height: 460px; right: -100px; top: 18%; background: var(--plum-5, var(--pink-5)); }
-  .glow i:nth-child(3) { width: 560px; height: 560px; left: 30%; bottom: -260px; background: var(--crimson-5, var(--pink-5)); }
+  .glow i:nth-child(2) { width: 460px; height: 460px; right: -100px; top: 18%; background: var(--gray-5); }
+  .glow i:nth-child(3) { width: 560px; height: 560px; left: 30%; bottom: -260px; background: var(--pink-4); }
   .shell { position: relative; z-index: 1; }
   @media (prefers-reduced-motion: no-preference) {
     .glow i:nth-child(1) { animation: drift1 26s ease-in-out infinite alternate; }
@@ -76,12 +76,12 @@
     display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh;
   }
   .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 20px; font-weight: 500; font-size: 15px; }
-  .brand-mark { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg, var(--pink-9), var(--plum-9, var(--pink-11))); color: var(--on-accent); display: grid; place-items: center; font-size: 13px; }
+  .brand-mark { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg, var(--pink-8, var(--pink-9)), var(--pink-11)); color: var(--on-accent); display: grid; place-items: center; font-size: 13px; }
   .nav a {
     display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px;
     color: var(--muted); font-size: 14px; text-decoration: none;
   }
-  .nav a:hover { background: var(--pink-3); color: var(--fg); }
+  .nav a:hover { background: var(--gray-3); color: var(--fg); }
   .nav a[aria-current="page"] { background: var(--card); color: var(--pink-12); font-weight: 500; box-shadow: 0 0 0 1px var(--line), 0 4px 12px -6px color-mix(in oklab, var(--pink-9) 40%, transparent); }
   .nav-label { font-size: 10.5px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 14px 10px 4px; }
   .badge { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: 11.5px; font-weight: 600; display: inline-grid; place-items: center; font-variant-numeric: tabular-nums; }
@@ -125,10 +125,8 @@
     background: var(--t-bg); border: 1px solid var(--t-line); color: var(--t-text); }
   .stat b { font-weight: 600; color: var(--t-strong); font-variant-numeric: tabular-nums; }
   a.stat:hover { text-decoration: none; border-color: var(--t-text); }
-  .stat.t-plum { --t-bg: var(--plum-3); --t-line: var(--plum-5); --t-text: var(--plum-11); --t-strong: var(--plum-12); }
-  .stat.t-green { --t-bg: var(--ht-status-success-wash); --t-line: var(--ht-status-success-line); --t-text: var(--ht-status-success-text); --t-strong: var(--ht-status-success-text); }
-  .stat.t-amber { --t-bg: var(--ht-status-warning-wash); --t-line: var(--ht-status-warning-line); --t-text: var(--ht-status-warning-text); --t-strong: var(--ht-status-warning-text); }
-  .stat.t-blue { --t-bg: var(--ht-status-info-wash); --t-line: var(--ht-status-info-line); --t-text: var(--ht-status-info-text); --t-strong: var(--ht-status-info-text); }
+  .stat.t-grey { --t-bg: var(--gray-3); --t-line: var(--gray-5); --t-text: var(--gray-11); --t-strong: var(--gray-12); }
+  .stat.t-soft { --t-bg: var(--pink-2); --t-line: var(--pink-4); --t-text: var(--pink-11); --t-strong: var(--pink-12); }
 
   .board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
   .col { display: grid; gap: 16px; min-width: 0; }
@@ -138,6 +136,9 @@
   .panel.cake > .panel-head { background: var(--cake); border-bottom: 1px solid var(--cake-line); color: var(--cake-text); padding: 12px 16px; margin-bottom: 8px; }
   .panel.cake > .panel-head .sub, .panel.cake > .panel-head .fold svg { color: var(--pink-11); }
   .panel.cake.collapsed > .panel-head { border-bottom: 0; margin-bottom: 0; padding-bottom: 12px; }
+  .panel.cake.grey { --cake: var(--gray-3); --cake-line: var(--gray-5); --cake-text: var(--gray-12); }
+  .panel.cake.grey > .panel-head .sub, .panel.cake.grey > .panel-head .fold svg { color: var(--gray-11); }
+  .panel.cake.grey .head-ico { color: var(--gray-11); }
   .head-ico { width: 22px; height: 22px; border-radius: 6px; background: var(--card); color: var(--pink-11); display: inline-grid; place-items: center; flex: none; }
   .head-ico svg { width: 13px; height: 13px; }
   .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 16px 10px; }
@@ -157,7 +158,7 @@
   .ev.now + .ev { border-top-color: transparent; }
   .pill { font-size: 11px; font-weight: 500; padding: 1px 7px; border-radius: 999px; letter-spacing: .02em; }
   .pill.now { background: var(--accent); color: var(--on-accent); }
-  .pill.next { background: var(--ht-status-info-bg); color: var(--ht-status-info-text); }
+  .pill.next { background: var(--gray-4); color: var(--gray-12); }
   .join { font-weight: 500; }
 
   /* Each task is its own card. Colour = how soon it's due (the chip also says it in words). */
@@ -165,14 +166,14 @@
   .item { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; gap: 10px; padding: 10px 10px 10px 12px; align-items: start;
     border-radius: 8px; border: 1px solid var(--line); background: var(--card); }
   .item:hover { background: var(--ht-surface-component); }
-  .item.u-late { background: var(--ht-status-danger-wash); border-color: var(--ht-status-danger-line); }
-  .item.u-soon { background: var(--ht-status-warning-wash); border-color: var(--ht-status-warning-line); }
-  .item.u-week { background: var(--ht-status-info-wash); border-color: var(--ht-status-info-line); }
+  .item.u-late { background: var(--pink-3); border-color: var(--pink-6); }
+  .item.u-soon { background: var(--pink-2); border-color: var(--pink-4); }
+  .item.u-week { background: var(--gray-2); border-color: var(--gray-5); }
   .item.done { background: var(--card); border-color: var(--line); }
   .due { font-size: 11px; font-weight: 500; border-radius: 4px; padding: 0 6px; white-space: nowrap; background: var(--ht-surface-component); color: var(--ht-text-secondary); }
-  .u-late .due { background: var(--ht-status-danger-bg); color: var(--ht-status-danger-text); }
-  .u-soon .due { background: var(--ht-status-warning-bg); color: var(--ht-status-warning-text); }
-  .u-week .due { background: var(--ht-status-info-bg); color: var(--ht-status-info-text); }
+  .u-late .due { background: var(--accent); color: var(--on-accent); }
+  .u-soon .due { background: var(--pink-4); color: var(--pink-12); }
+  .u-week .due { background: var(--gray-4); color: var(--gray-12); }
   .item input[type=checkbox] { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--accent); }
   .item .title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
   .item.done .title { color: var(--muted); text-decoration: line-through; }
@@ -182,7 +183,7 @@
   .prio { display: inline-flex; gap: 2px; align-items: flex-end; height: 12px; }
   .prio i { width: 3px; border-radius: 1px; background: var(--line-strong); }
   .prio i:nth-child(1) { height: 5px } .prio i:nth-child(2) { height: 8px } .prio i:nth-child(3) { height: 11px }
-  .prio[data-p="1"] i { background: var(--ht-status-danger-vivid); }
+  .prio[data-p="1"] i { background: var(--pink-9); }
   .prio[data-p="2"] i:nth-child(-n+3), .prio[data-p="3"] i:nth-child(-n+2), .prio[data-p="4"] i:nth-child(-n+1) { background: var(--muted); }
   .src-tag { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; white-space: nowrap; }
   .group-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 10px 8px 4px; }
@@ -224,8 +225,8 @@
   /* Morning brief view */
   .bf-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-bottom: 20px; }
   .bf-hero .lead { font-size: 14.5px; line-height: 1.55; max-width: 70ch; }
-  .meter { height: 8px; border-radius: 999px; background: var(--pink-4); overflow: hidden; margin-top: 10px; max-width: 420px; }
-  .meter i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--pink-9), var(--plum-9, var(--pink-11))); transition: width .3s ease; }
+  .meter { height: 8px; border-radius: 999px; background: var(--gray-4); overflow: hidden; margin-top: 10px; max-width: 420px; }
+  .meter i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--pink-8, var(--pink-9)), var(--pink-11)); transition: width .3s ease; }
   .ring { font-size: 28px; font-weight: 600; color: var(--pink-11); font-variant-numeric: tabular-nums; text-align: right; line-height: 1; }
   .ring small { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-top: 4px; }
   .bf-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
@@ -242,8 +243,8 @@
   .bf.done .txt { color: var(--muted); text-decoration: line-through; }
   .bf.done .txt a { color: var(--muted); }
   .tag { font-size: 11px; font-weight: 500; border-radius: 4px; padding: 0 6px; background: var(--pink-3); color: var(--pink-11); }
-  .tag.plum { background: var(--plum-3); color: var(--plum-11); }
-  .yay { padding: 14px 12px; border-radius: 10px; background: var(--ht-status-success-wash); color: var(--ht-status-success-text); font-size: 13.5px; font-weight: 500; margin: 0 10px 10px; }
+  .tag.plum { background: var(--gray-3); color: var(--gray-12); }
+  .yay { padding: 14px 12px; border-radius: 10px; background: var(--pink-3); color: var(--pink-12); font-size: 13.5px; font-weight: 500; margin: 0 10px 10px; }
 
   textarea.scratch { width: 100%; min-height: 140px; resize: vertical; border: 1px solid var(--ht-border-component); border-radius: 6px; background: var(--ht-surface-input); padding: 10px; font-size: 14px; line-height: 1.5; }
   .saved { font-size: 12.5px; color: var(--muted); min-height: 18px; }
@@ -338,10 +339,10 @@
 
       <div class="stats" aria-label="At a glance">
         <a class="stat" href="#brief"><b id="s-bf">–</b> brief items left</a>
-        <span class="stat t-plum"><b id="s-meet">–</b> meetings left</span>
-        <span class="stat t-green"><b id="s-free">–</b> free until next</span>
-        <span class="stat t-amber"><b id="s-iss">–</b> open issues</span>
-        <span class="stat t-blue"><b id="s-mail">–</b> unread</span>
+        <span class="stat t-grey"><b id="s-meet">–</b> meetings left</span>
+        <span class="stat t-soft"><b id="s-free">–</b> free until next</span>
+        <span class="stat t-grey"><b id="s-iss">–</b> open issues</span>
+        <span class="stat t-soft"><b id="s-mail">–</b> unread</span>
       </div>
 
       <div class="board">
@@ -351,7 +352,7 @@
             <div class="allday" id="allday"></div>
             <div class="panel-body" id="sched"><div class="skel w80"></div><div class="skel w60"></div><div class="skel w80"></div></div>
           </section>
-          <section class="panel cake" aria-labelledby="h-mtg">
+          <section class="panel cake grey" aria-labelledby="h-mtg">
             <div class="panel-head"><h2 id="h-mtg"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 2.5h6l2.5 2.5v8.5H4z"/><path d="M6 7.5h4.5M6 10h4.5"/></svg></span>Recent meeting notes</h2><span class="sub">Granola</span></div>
             <div class="panel-body" id="mtg"><div class="skel w60"></div><div class="skel w80"></div></div>
           </section>
@@ -361,13 +362,13 @@
             <div class="panel-head"><h2 id="h-slk"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2.5 4.5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7l-3 2.5V11.5h.5a2 2 0 0 1-2-2z"/></svg></span>Slack</h2><span class="sub" id="slk-sub">DMs · last 2 days</span></div>
             <div class="panel-body" id="slk"><div class="skel w80"></div><div class="skel w60"></div></div>
           </section>
-          <section class="panel cake" aria-labelledby="h-mail">
+          <section class="panel cake grey" aria-labelledby="h-mail">
             <div class="panel-head"><h2 id="h-mail"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="3.5" width="12" height="9" rx="2"/><path d="M2.5 4.5L8 9l5.5-4.5"/></svg></span>Inbox</h2><span class="sub">Unread · Primary</span></div>
             <div class="panel-body" id="mail"><div class="skel w80"></div><div class="skel w40"></div></div>
           </section>
         </div>
         <div class="col">
-          <section class="panel cake" aria-labelledby="h-note">
+          <section class="panel cake grey" aria-labelledby="h-note">
             <div class="panel-head"><h2 id="h-note"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M10.5 2.5l3 3-7.5 7.5H3v-3z"/><path d="M9 4l3 3"/></svg></span>Scratchpad</h2><span class="sub">Only you see this</span></div>
             <div class="panel-body">
               <textarea class="scratch" id="scratch" placeholder="Quick notes for today. Press Enter to save." aria-labelledby="h-note" aria-describedby="saved"></textarea>
@@ -408,7 +409,7 @@
           <div class="panel-head"><h2 id="h-bf1"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5l1.6 4.1 4.4.3-3.4 2.8 1.1 4.3L8 10.6 4.3 13l1.1-4.3L2 5.9l4.4-.3z"/></svg></span>Claude's list</h2><span class="sub" id="bf1-sub"></span></div>
           <div class="bf-list" id="bf-claude"><div class="skel w80"></div><div class="skel w60"></div></div>
         </section>
-        <section class="panel cake" aria-labelledby="h-bf2">
+        <section class="panel cake grey" aria-labelledby="h-bf2">
           <div class="panel-head"><h2 id="h-bf2"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2.5 4.5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7l-3 2.5V11.5h.5a2 2 0 0 1-2-2z"/></svg></span>Asks from people</h2><span class="sub" id="bf2-sub">Slack · last 7 days</span></div>
           <div class="bf-list" id="bf-people"><div class="skel w80"></div></div>
         </section>
