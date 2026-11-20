@@ -6,15 +6,17 @@
   // HT tokens flip on html.dark. Follow the viewer's theme: explicit data-theme wins, else the OS setting.
   (function () {
     var root = document.documentElement, mq = window.matchMedia('(prefers-color-scheme: dark)');
+    // Day Desk skin: 'light' (greys + pinks) or 'wine' (always dark). Remembered in this browser.
+    try { var sk = localStorage.getItem('daydesk.skin'); if (sk === 'wine') root.setAttribute('data-skin', 'wine'); } catch (_) {}
     function sync() {
       var t = root.getAttribute('data-theme');
-      var dark = t === 'dark' || (t !== 'light' && mq.matches);
+      var dark = root.getAttribute('data-skin') === 'wine' || t === 'dark' || (t !== 'light' && mq.matches);
       root.classList.toggle('dark', dark);
       root.style.colorScheme = dark ? 'dark' : 'light';
     }
     sync();
     mq.addEventListener('change', sync);
-    new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ['data-theme', 'data-skin'] });
   })();
 </script>
 <style>
@@ -42,6 +44,24 @@
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: var(--gray-1); --accent: var(--pink-9); --accent-hover: var(--pink-10); --on-accent: var(--pink-1); --card: var(--gray-2); color-scheme: dark } }
   :root[data-theme="dark"] { --bg: var(--gray-1); --accent: var(--pink-9); --accent-hover: var(--pink-10); --on-accent: var(--pink-1); --card: var(--gray-2); color-scheme: dark }
 
+  /* Wine skin: deep ruby surfaces, rosé accents. Greys and pinks both map onto the ruby scale. */
+  html:root[data-skin="wine"] { --gray-1: var(--ruby-1); --pink-1: var(--ruby-1); --gray-2: var(--ruby-2); --pink-2: var(--ruby-2); --gray-3: var(--ruby-3); --pink-3: var(--ruby-3); --gray-4: var(--ruby-4); --pink-4: var(--ruby-4); --gray-5: var(--ruby-5); --pink-5: var(--ruby-5); --gray-6: var(--ruby-6); --pink-6: var(--ruby-6); --gray-7: var(--ruby-7); --pink-7: var(--ruby-7); --gray-8: var(--ruby-8); --pink-8: var(--ruby-8); --gray-9: var(--ruby-9); --pink-9: var(--ruby-9); --gray-10: var(--ruby-10); --pink-10: var(--ruby-10); --gray-11: var(--ruby-11); --pink-11: var(--ruby-11); --gray-12: var(--ruby-12); --pink-12: var(--ruby-12);
+    --bg: var(--ruby-1); --card: var(--ruby-2); --fg: var(--ruby-12); --muted: color-mix(in oklab, var(--ruby-12) 62%, var(--ruby-2));
+    --line: var(--ruby-4); --line-strong: var(--ruby-6); --accent: var(--ruby-9); --accent-hover: var(--ruby-10); --accent-text: var(--ruby-11);
+    --on-accent: var(--ruby-1); --accent-wash: var(--ruby-3); color-scheme: dark;
+    --ht-surface-component: var(--ruby-3); --ht-surface-component-hover: var(--ruby-4); --ht-surface-input: var(--ruby-1); --ht-text-secondary: var(--muted); --ht-border-component: var(--ruby-5); }
+  [data-skin="wine"] .panel.cake.grey { --cake: var(--ruby-3); --cake-line: var(--ruby-5); --cake-text: var(--ruby-12); }
+  [data-skin="wine"] .panel.cake.grey .head-ico { background: var(--ruby-2); color: var(--ruby-11); }
+  [data-skin="wine"] .panel.cake.grey > .panel-head .sub { color: var(--muted); }
+  [data-skin="wine"] textarea.scratch, [data-skin="wine"] .add input { background: var(--ruby-1); border-color: var(--ruby-5); color: var(--fg); }
+  [data-skin="wine"] .btn:not(.primary) { background: var(--ruby-3); border-color: var(--ruby-5); color: var(--fg); }
+  [data-skin="wine"] .glow i { opacity: .45; }
+  [data-skin="wine"] .glow i:nth-child(1) { background: var(--ruby-7); }
+  /* Skin switch */
+  .skin { display: flex; gap: 2px; padding: 2px; border-radius: 6px; background: var(--gray-3); margin-bottom: 8px; }
+  .skin button { all: unset; flex: 1; text-align: center; font-size: 12px; font-weight: 500; padding: 4px 6px; border-radius: 4px; cursor: pointer; color: var(--muted); }
+  .skin button[aria-pressed="true"] { background: var(--card); color: var(--fg); box-shadow: 0 0 0 1px var(--line); }
+  .skin button:focus-visible { outline: 2px solid var(--ht-border-focus); }
   html, body { height: 100%; }
   body {
     margin: 0; background: var(--bg); color: var(--fg);
@@ -309,6 +329,9 @@
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 1.5l1.6 4.1 4.4.3-3.4 2.8 1.1 4.3L8 10.6 4.3 13l1.1-4.3L2 5.9l4.4-.3z"/></svg>Morning brief<span class="badge" id="nav-bf" data-zero>–</span></a>
     </nav>
     <div class="rail-foot" aria-label="Connected sources">
+      <div class="skin" role="group" aria-label="Color scheme">
+        <button type="button" data-skin="light">Light</button><button type="button" data-skin="wine">Wine</button>
+      </div>
       <div class="src"><span class="dot" id="dot-cal"></span>Google Calendar</div>
       <div class="src"><span class="dot" id="dot-lin"></span>Linear</div>
       <div class="src"><span class="dot" id="dot-mail"></span>Gmail</div>
@@ -1098,6 +1121,19 @@ Last line: the one thing to finish before stopping.`;
   });
 
   renderWeek();
+})();
+</script>
+<script>
+/* Skin switch: Light (greys + pinks) or Wine (dark ruby). */
+(() => {
+  const root = document.documentElement, btns = document.querySelectorAll('.skin button');
+  const paint = () => btns.forEach((b) => b.setAttribute('aria-pressed', String((root.getAttribute('data-skin') || 'light') === b.dataset.skin)));
+  btns.forEach((b) => b.addEventListener('click', () => {
+    if (b.dataset.skin === 'wine') root.setAttribute('data-skin', 'wine'); else root.removeAttribute('data-skin');
+    try { localStorage.setItem('daydesk.skin', b.dataset.skin); } catch (_) {}
+    paint();
+  }));
+  paint();
 })();
 </script>
 <script>
