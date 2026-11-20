@@ -163,12 +163,12 @@
   /* Each task is its own card. Colour = how soon it's due (the chip also says it in words). */
   #todo { display: flex; flex-direction: column; gap: 6px; }
   .item { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; gap: 10px; padding: 10px 10px 10px 12px; align-items: start;
-    border-radius: 8px; border: 1px solid var(--line); border-left: 3px solid var(--line-strong); background: var(--card); }
+    border-radius: 8px; border: 1px solid var(--line); background: var(--card); }
   .item:hover { background: var(--ht-surface-component); }
-  .item.u-late { background: var(--ht-status-danger-wash); border-color: var(--ht-status-danger-line); border-left-color: var(--ht-status-danger-vivid); }
-  .item.u-soon { background: var(--ht-status-warning-wash); border-color: var(--ht-status-warning-line); border-left-color: var(--ht-status-warning-vivid); }
-  .item.u-week { background: var(--ht-status-info-wash); border-color: var(--ht-status-info-line); border-left-color: var(--ht-status-info-vivid); }
-  .item.done { background: var(--card); border-color: var(--line); border-left-color: var(--line); }
+  .item.u-late { background: var(--ht-status-danger-wash); border-color: var(--ht-status-danger-line); }
+  .item.u-soon { background: var(--ht-status-warning-wash); border-color: var(--ht-status-warning-line); }
+  .item.u-week { background: var(--ht-status-info-wash); border-color: var(--ht-status-info-line); }
+  .item.done { background: var(--card); border-color: var(--line); }
   .due { font-size: 11px; font-weight: 500; border-radius: 4px; padding: 0 6px; white-space: nowrap; background: var(--ht-surface-component); color: var(--ht-text-secondary); }
   .u-late .due { background: var(--ht-status-danger-bg); color: var(--ht-status-danger-text); }
   .u-soon .due { background: var(--ht-status-warning-bg); color: var(--ht-status-warning-text); }
@@ -213,8 +213,8 @@
   .slk .title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   #slk { display: flex; flex-direction: column; gap: 6px; }
   .slk-act { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; padding: 10px 10px 10px 12px; border-radius: 8px;
-    border: 1px solid var(--pink-5); border-left: 3px solid var(--pink-9); background: var(--pink-2); }
-  .slk-act.done { background: var(--card); border-color: var(--line); border-left-color: var(--line); }
+    border: 1px solid var(--pink-5); background: var(--pink-2); }
+  .slk-act.done { background: var(--card); border-color: var(--line); }
   .slk-act.done .title { color: var(--muted); text-decoration: line-through; }
   .slk-act input { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--accent); }
   .slk-act .from { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--muted); }
@@ -231,10 +231,9 @@
   .bf-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
   .bf-list { display: flex; flex-direction: column; gap: 8px; padding: 0 10px 10px; }
   .bf { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; padding: 12px 12px 12px 10px; border-radius: 10px;
-    background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--pink-9); }
+    background: var(--card); border: 1px solid var(--line); }
   .bf.top { background: var(--pink-2); }
-  .bf.ppl { border-left-color: var(--plum-9, var(--pink-9)); }
-  .bf.done { border-left-color: var(--line); background: var(--card); }
+  .bf.done { background: var(--card); }
   .bf .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11.5px; font-weight: 600; background: var(--pink-4); color: var(--pink-11); margin-top: 1px; }
   .bf input { width: 18px; height: 18px; margin: 2px 0 0 2px; accent-color: var(--accent); cursor: pointer; }
   .bf .txt { font-size: 14px; line-height: 1.5; font-weight: 500; overflow-wrap: anywhere; }
