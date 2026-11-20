@@ -388,7 +388,7 @@
             <div class="panel-body" id="mtg"><div class="skel w60"></div><div class="skel w80"></div></div>
           </section>
           <section class="panel cake grey" aria-labelledby="h-gh">
-            <div class="panel-head"><h2 id="h-gh"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="4.5" cy="3.5" r="1.5"/><circle cx="4.5" cy="12.5" r="1.5"/><circle cx="11.5" cy="12.5" r="1.5"/><path d="M4.5 5v6M11.5 11V7.5a2 2 0 0 0-2-2H7"/><path d="M8.5 4L7 5.5 8.5 7"/></svg></span>GitHub</h2><span class="sub" id="gh-sub">isapp · open PRs</span></div>
+            <div class="panel-head"><h2 id="h-gh"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="4.5" cy="3.5" r="1.5"/><circle cx="4.5" cy="12.5" r="1.5"/><circle cx="11.5" cy="12.5" r="1.5"/><path d="M4.5 5v6M11.5 11V7.5a2 2 0 0 0-2-2H7"/><path d="M8.5 4L7 5.5 8.5 7"/></svg></span>GitHub</h2><span class="sub" id="gh-sub">isapp + ht-design · open PRs</span></div>
             <div class="panel-body" id="gh"><div class="skel w80"></div><div class="skel w60"></div></div>
           </section>
         </div>
@@ -929,7 +929,7 @@
   /* ---------- GitHub (isapp PRs) ----------
      There's no GitHub connector, so a scheduled task on your Mac runs sync/github-prs.sh every 30 min
      and writes the result to your private doc data/users/<you>/github. This only reads that doc. */
-  const GH_WHY = { review: 'Review requested', mine: 'Yours', mention: 'Mentions you' };
+  const GH_WHY = { review: 'Review requested', mine: 'Yours', mention: 'Mentions you', repo: 'Team' };
   function renderGitHub() {
     const box = $('gh'), g = state.github;
     if (g === undefined) return;
@@ -938,7 +938,9 @@
     const open = g.prs.filter((p) => !state.checks.has(ghKey(p))).length;
     $('gh-sub').textContent = `${open} open` + (synced && !isNaN(synced) ? ` · synced ${ago(synced.getTime())}` : '');
     if (!g.prs.length) { box.replaceChildren(h('div', { class: 'state' }, 'No open PRs for you in isapp.')); return; }
-    box.replaceChildren(...g.prs.map((p) => {
+    const rank = { review: 0, mention: 1, mine: 2, repo: 3 };
+    const prs = [...g.prs].sort((a, b) => ((rank[a.why] ?? 9) - (rank[b.why] ?? 9)) || String(b.updatedAt).localeCompare(String(a.updatedAt)));
+    box.replaceChildren(...prs.map((p) => {
       const key = ghKey(p), done = state.checks.has(key), id = 'cb-' + key;
       const upd = p.updatedAt ? new Date(p.updatedAt) : null;
       return h('div', { class: 'gh' + (p.why === 'review' ? ' review' : '') + (done ? ' done' : '') },
