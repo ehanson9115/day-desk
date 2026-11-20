@@ -21,7 +21,7 @@
   /* Layout: a quiet left rail + a three-column "today" board (schedule · to do · inbox), stacking to one column on phones. */
   :root {
     /* Pink theme: page, borders and washes are tints of the pink accent (Radix pink scale flips in dark). */
-    --bg: var(--gray-2);
+    --bg: color-mix(in oklab, var(--gray-2) 50%, var(--gray-1));
     --card: var(--ht-surface-card);
     --inset: var(--ht-surface-inset);
     --fg: var(--ht-text-body);
@@ -136,7 +136,7 @@
   .panel.cake > .panel-head { background: var(--cake); border-bottom: 1px solid var(--cake-line); color: var(--cake-text); padding: 12px 16px; margin-bottom: 8px; }
   .panel.cake > .panel-head .sub, .panel.cake > .panel-head .fold svg { color: var(--pink-11); }
   .panel.cake.collapsed > .panel-head { border-bottom: 0; margin-bottom: 0; padding-bottom: 12px; }
-  .panel.cake.grey { --cake: var(--gray-3); --cake-line: var(--gray-5); --cake-text: var(--gray-12); }
+  .panel.cake.grey { --cake: var(--gray-2); --cake-line: var(--gray-4); --cake-text: var(--gray-12); }
   .panel.cake.grey > .panel-head .sub, .panel.cake.grey > .panel-head .fold svg { color: var(--gray-11); }
   .panel.cake.grey .head-ico { color: var(--gray-11); }
   .head-ico { width: 22px; height: 22px; border-radius: 6px; background: var(--card); color: var(--pink-11); display: inline-grid; place-items: center; flex: none; }
