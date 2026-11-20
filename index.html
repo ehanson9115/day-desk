@@ -20,21 +20,27 @@
 <style>
   /* Layout: a quiet left rail + a three-column "today" board (schedule · to do · inbox), stacking to one column on phones. */
   :root {
-    --bg: var(--ht-surface-page);
+    /* Pink theme: page, borders and washes are tints of the pink accent (Radix pink scale flips in dark). */
+    --bg: var(--pink-2);
     --card: var(--ht-surface-card);
     --inset: var(--ht-surface-inset);
     --fg: var(--ht-text-body);
     --muted: var(--ht-text-secondary);
-    --line: var(--ht-border-subtle);
-    --line-strong: var(--ht-border-default);
-    --accent: var(--ht-action);
-    --accent-text: var(--ht-action-text);
-    --accent-wash: var(--ht-action-wash);
-    --on-accent: var(--ht-action-on-solid);
+    --line: var(--pink-4);
+    --line-strong: var(--pink-6);
+    --accent: var(--pink-11);
+    --accent-hover: var(--pink-12);
+    --accent-text: var(--pink-11);
+    --accent-wash: var(--pink-3);
+    --on-accent: #fff;
+    --cake: var(--pink-4);
+    --cake-line: var(--pink-6);
+    --cake-text: var(--pink-12);
     --font: var(--font-sans, "Geist", system-ui, -apple-system, sans-serif);
   }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: var(--ht-surface-page); color-scheme: dark } }
-  :root[data-theme="dark"] { --bg: var(--ht-surface-page); color-scheme: dark }
+  /* Dark: deep pink page; solid pink keeps contrast with dark text on it. */
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: var(--pink-1); --accent: var(--pink-9); --accent-hover: var(--pink-10); --on-accent: var(--pink-1); --card: color-mix(in oklab, var(--pink-2) 92%, black); color-scheme: dark } }
+  :root[data-theme="dark"] { --bg: var(--pink-1); --accent: var(--pink-9); --accent-hover: var(--pink-10); --on-accent: var(--pink-1); --card: color-mix(in oklab, var(--pink-2) 92%, black); color-scheme: dark }
 
   html, body { height: 100%; }
   body {
@@ -43,6 +49,21 @@
     -webkit-font-smoothing: antialiased;
   }
   * { box-sizing: border-box; }
+  /* Floating pink gradient behind everything */
+  .glow { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .glow i { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .7; }
+  .glow i:nth-child(1) { width: 520px; height: 520px; left: -120px; top: -160px; background: var(--pink-6); }
+  .glow i:nth-child(2) { width: 460px; height: 460px; right: -100px; top: 18%; background: var(--plum-5, var(--pink-5)); }
+  .glow i:nth-child(3) { width: 560px; height: 560px; left: 30%; bottom: -260px; background: var(--crimson-5, var(--pink-5)); }
+  .shell { position: relative; z-index: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    .glow i:nth-child(1) { animation: drift1 26s ease-in-out infinite alternate; }
+    .glow i:nth-child(2) { animation: drift2 32s ease-in-out infinite alternate; }
+    .glow i:nth-child(3) { animation: drift3 38s ease-in-out infinite alternate; }
+    @keyframes drift1 { to { transform: translate(140px, 90px) scale(1.12); } }
+    @keyframes drift2 { to { transform: translate(-160px, 120px) scale(.9); } }
+    @keyframes drift3 { to { transform: translate(-120px, -80px) scale(1.08); } }
+  }
   button, input, textarea { font: inherit; color: inherit; }
   a { color: var(--accent-text); text-decoration: none; }
   a:hover { text-decoration: underline; }
@@ -51,16 +72,20 @@
   .shell { display: grid; grid-template-columns: 216px minmax(0, 1fr); min-height: 100%; }
   .rail {
     border-right: 1px solid var(--line); padding: 20px 12px;
+    background: color-mix(in oklab, var(--card) 62%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh;
   }
   .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 20px; font-weight: 500; font-size: 15px; }
-  .brand-mark { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; font-size: 13px; }
+  .brand-mark { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg, var(--pink-9), var(--plum-9, var(--pink-11))); color: var(--on-accent); display: grid; place-items: center; font-size: 13px; }
   .nav a {
     display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px;
     color: var(--muted); font-size: 14px; text-decoration: none;
   }
-  .nav a:hover { background: var(--ht-surface-component-hover); color: var(--fg); }
-  .nav a[aria-current="page"] { background: var(--card); color: var(--fg); font-weight: 500; box-shadow: 0 0 0 1px var(--line); }
+  .nav a:hover { background: var(--pink-3); color: var(--fg); }
+  .nav a[aria-current="page"] { background: var(--card); color: var(--pink-12); font-weight: 500; box-shadow: 0 0 0 1px var(--line), 0 4px 12px -6px color-mix(in oklab, var(--pink-9) 40%, transparent); }
+  .nav-label { font-size: 10.5px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 14px 10px 4px; }
+  .badge { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: 11.5px; font-weight: 600; display: inline-grid; place-items: center; font-variant-numeric: tabular-nums; }
+  .badge[data-zero] { background: var(--pink-4); color: var(--pink-11); }
   .nav svg { width: 16px; height: 16px; flex: none; }
   .rail-foot { margin-top: auto; padding: 0 8px; font-size: 12.5px; color: var(--muted); display: grid; gap: 6px; }
   .src { display: flex; align-items: center; gap: 8px; }
@@ -82,7 +107,7 @@
   }
   .btn:hover { background: var(--ht-surface-component-hover); }
   .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .btn.primary:hover { background: var(--ht-action-hover); }
+  .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
   .btn[disabled] { opacity: .5; cursor: default; }
   .btn svg { width: 16px; height: 16px; }
   .link-btn { background: none; border: 0; padding: 0; cursor: pointer; color: var(--accent-text); font-size: 13px; font-weight: 500; }
@@ -95,12 +120,27 @@
   .brief-meta { font-size: 12.5px; color: var(--muted); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
   .stats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-  .stat { display: inline-flex; align-items: baseline; gap: 6px; padding: 6px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 13px; color: var(--muted); }
-  .stat b { font-weight: 500; color: var(--fg); font-variant-numeric: tabular-nums; }
+  .stat { display: inline-flex; align-items: baseline; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: 13px; text-decoration: none;
+    --t-bg: var(--pink-3); --t-line: var(--pink-5); --t-text: var(--pink-11); --t-strong: var(--pink-12);
+    background: var(--t-bg); border: 1px solid var(--t-line); color: var(--t-text); }
+  .stat b { font-weight: 600; color: var(--t-strong); font-variant-numeric: tabular-nums; }
+  a.stat:hover { text-decoration: none; border-color: var(--t-text); }
+  .stat.t-plum { --t-bg: var(--plum-3); --t-line: var(--plum-5); --t-text: var(--plum-11); --t-strong: var(--plum-12); }
+  .stat.t-green { --t-bg: var(--ht-status-success-wash); --t-line: var(--ht-status-success-line); --t-text: var(--ht-status-success-text); --t-strong: var(--ht-status-success-text); }
+  .stat.t-amber { --t-bg: var(--ht-status-warning-wash); --t-line: var(--ht-status-warning-line); --t-text: var(--ht-status-warning-text); --t-strong: var(--ht-status-warning-text); }
+  .stat.t-blue { --t-bg: var(--ht-status-info-wash); --t-line: var(--ht-status-info-line); --t-text: var(--ht-status-info-text); --t-strong: var(--ht-status-info-text); }
 
-  .board { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(0, .95fr); gap: 16px; align-items: start; }
+  .board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .board + .board { margin-top: 16px; }
   .col { display: grid; gap: 16px; min-width: 0; }
-  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; min-width: 0; box-shadow: 0 1px 2px color-mix(in oklab, var(--pink-9) 8%, transparent), 0 12px 28px -18px color-mix(in oklab, var(--pink-9) 35%, transparent); }
+  /* Cake header: a tinted band on top of the card */
+  .panel.cake { overflow: hidden; }
+  .panel.cake > .panel-head { background: var(--cake); border-bottom: 1px solid var(--cake-line); color: var(--cake-text); padding: 12px 16px; margin-bottom: 8px; }
+  .panel.cake > .panel-head .sub, .panel.cake > .panel-head .fold svg { color: var(--pink-11); }
+  .panel.cake.collapsed > .panel-head { border-bottom: 0; margin-bottom: 0; padding-bottom: 12px; }
+  .head-ico { width: 22px; height: 22px; border-radius: 6px; background: var(--card); color: var(--pink-11); display: inline-grid; place-items: center; flex: none; }
+  .head-ico svg { width: 13px; height: 13px; }
   .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 16px 10px; }
   .panel-head .sub { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
   .panel-body { padding: 0 8px 8px; }
@@ -158,7 +198,8 @@
   .mtg .title { font-size: 14px; font-weight: 600; }
   .mtg .when { font-size: 12.5px; color: var(--muted); }
   /* Collapsible panels */
-  .panel-head h2 { display: flex; }
+  .panel-head h2 { display: flex; align-items: center; gap: 8px; }
+  .fold { gap: 8px; }
   .fold { all: unset; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border-radius: 4px; font: inherit; }
   .fold:focus-visible { outline: 2px solid var(--ht-border-focus); outline-offset: 2px; }
   .fold svg { width: 12px; height: 12px; color: var(--muted); transition: transform .15s ease; }
@@ -171,6 +212,40 @@
   .slk:hover { background: var(--ht-surface-component); text-decoration: none; }
   .slk .from { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--muted); }
   .slk .title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  #slk { display: flex; flex-direction: column; gap: 6px; }
+  .slk-act { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; padding: 10px 10px 10px 12px; border-radius: 8px;
+    border: 1px solid var(--pink-5); border-left: 3px solid var(--pink-9); background: var(--pink-2); }
+  .slk-act.done { background: var(--card); border-color: var(--line); border-left-color: var(--line); }
+  .slk-act.done .title { color: var(--muted); text-decoration: line-through; }
+  .slk-act input { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--accent); }
+  .slk-act .from { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--muted); }
+  .slk-act .title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; color: var(--fg); }
+  .needs { font-size: 11px; font-weight: 600; color: var(--pink-11); background: var(--pink-4); border-radius: 4px; padding: 0 6px; }
+
+  /* Morning brief view */
+  .bf-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-bottom: 20px; }
+  .bf-hero .lead { font-size: 14.5px; line-height: 1.55; max-width: 70ch; }
+  .meter { height: 8px; border-radius: 999px; background: var(--pink-4); overflow: hidden; margin-top: 10px; max-width: 420px; }
+  .meter i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--pink-9), var(--plum-9, var(--pink-11))); transition: width .3s ease; }
+  .ring { font-size: 28px; font-weight: 600; color: var(--pink-11); font-variant-numeric: tabular-nums; text-align: right; line-height: 1; }
+  .ring small { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-top: 4px; }
+  .bf-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .bf-list { display: flex; flex-direction: column; gap: 8px; padding: 0 10px 10px; }
+  .bf { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; padding: 12px 12px 12px 10px; border-radius: 10px;
+    background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--pink-9); }
+  .bf.top { background: var(--pink-2); }
+  .bf.ppl { border-left-color: var(--plum-9, var(--pink-9)); }
+  .bf.done { border-left-color: var(--line); background: var(--card); }
+  .bf .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11.5px; font-weight: 600; background: var(--pink-4); color: var(--pink-11); margin-top: 1px; }
+  .bf input { width: 18px; height: 18px; margin: 2px 0 0 2px; accent-color: var(--accent); cursor: pointer; }
+  .bf .txt { font-size: 14px; line-height: 1.5; font-weight: 500; overflow-wrap: anywhere; }
+  .bf .txt a { font-weight: 600; text-decoration: underline; text-decoration-color: var(--pink-6); text-underline-offset: 2px; }
+  .bf .meta { font-size: 12.5px; color: var(--muted); margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .bf.done .txt { color: var(--muted); text-decoration: line-through; }
+  .bf.done .txt a { color: var(--muted); }
+  .tag { font-size: 11px; font-weight: 500; border-radius: 4px; padding: 0 6px; background: var(--pink-3); color: var(--pink-11); }
+  .tag.plum { background: var(--plum-3); color: var(--plum-11); }
+  .yay { padding: 14px 12px; border-radius: 10px; background: var(--ht-status-success-wash); color: var(--ht-status-success-text); font-size: 13.5px; font-weight: 500; margin: 0 10px 10px; }
 
   textarea.scratch { width: 100%; min-height: 140px; resize: vertical; border: 1px solid var(--ht-border-component); border-radius: 6px; background: var(--ht-surface-input); padding: 10px; font-size: 14px; line-height: 1.5; }
   .saved { font-size: 12.5px; color: var(--muted); padding: 4px 2px 0; min-height: 18px; }
@@ -194,7 +269,7 @@
 
   @media (max-width: 1100px) {
     .board { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-    .col.c3 { grid-column: 1 / -1; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .board > .col:nth-child(3) { grid-column: 1 / -1; }
     .week { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
   @media (max-width: 760px) {
@@ -204,7 +279,10 @@
     .nav { display: flex; gap: 4px; }
     .rail-foot { display: none; }
     main { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 40px; }
-    .board, .col.c3 { grid-template-columns: minmax(0, 1fr); }
+    .board, .bf-cols { grid-template-columns: minmax(0, 1fr); }
+    .board > .col:nth-child(3) { grid-column: auto; }
+    .badge { margin-left: 6px; }
+    .nav-label { display: none; }
     .week { grid-template-columns: minmax(0, 1fr); }
     .day { min-height: 0; }
     h1 { font-size: 22px; }
@@ -215,6 +293,7 @@
   }
 </style>
 
+<div class="glow" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="shell">
   <aside class="rail">
     <div class="brand"><span class="brand-mark" aria-hidden="true">D</span>Day Desk</div>
@@ -223,6 +302,9 @@
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></svg>Today</a>
       <a href="#week" data-view="week">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3"/></svg>Week</a>
+      <div class="nav-label">From Claude</div>
+      <a href="#brief" data-view="brief">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 1.5l1.6 4.1 4.4.3-3.4 2.8 1.1 4.3L8 10.6 4.3 13l1.1-4.3L2 5.9l4.4-.3z"/></svg>Morning brief<span class="badge" id="nav-bf" data-zero>–</span></a>
     </nav>
     <div class="rail-foot" aria-label="Connected sources">
       <div class="src"><span class="dot" id="dot-cal"></span>Google Calendar</div>
@@ -254,45 +336,52 @@
       </div>
 
       <div class="stats" aria-label="At a glance">
-        <span class="stat"><b id="s-meet">–</b> meetings left</span>
-        <span class="stat"><b id="s-free">–</b> free until next</span>
-        <span class="stat"><b id="s-iss">–</b> open issues</span>
-        <span class="stat"><b id="s-mail">–</b> unread</span>
+        <a class="stat" href="#brief"><b id="s-bf">–</b> brief items left</a>
+        <span class="stat t-plum"><b id="s-meet">–</b> meetings left</span>
+        <span class="stat t-green"><b id="s-free">–</b> free until next</span>
+        <span class="stat t-amber"><b id="s-iss">–</b> open issues</span>
+        <span class="stat t-blue"><b id="s-mail">–</b> unread</span>
       </div>
 
       <div class="board">
         <div class="col">
-          <section class="panel" aria-labelledby="h-sched">
-            <div class="panel-head"><h2 id="h-sched">Schedule</h2><span class="sub" id="sched-sub"></span></div>
+          <section class="panel cake" aria-labelledby="h-sched">
+            <div class="panel-head"><h2 id="h-sched"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3"/></svg></span>Schedule</h2><span class="sub" id="sched-sub"></span></div>
             <div class="allday" id="allday"></div>
             <div class="panel-body" id="sched"><div class="skel w80"></div><div class="skel w60"></div><div class="skel w80"></div></div>
           </section>
         </div>
-
         <div class="col">
-          <section class="panel" aria-labelledby="h-slk">
-            <div class="panel-head"><h2 id="h-slk">Slack</h2><span class="sub">DMs · last 2 days</span></div>
+          <section class="panel cake" aria-labelledby="h-slk">
+            <div class="panel-head"><h2 id="h-slk"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2.5 4.5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7l-3 2.5V11.5h.5a2 2 0 0 1-2-2z"/></svg></span>Slack</h2><span class="sub" id="slk-sub">DMs · last 2 days</span></div>
             <div class="panel-body" id="slk"><div class="skel w80"></div><div class="skel w60"></div></div>
           </section>
-          <section class="panel" aria-labelledby="h-todo">
-            <div class="panel-head"><h2 id="h-todo">To do</h2><span class="sub" id="todo-sub"></span></div>
+        </div>
+        <div class="col">
+          <section class="panel cake" aria-labelledby="h-todo">
+            <div class="panel-head"><h2 id="h-todo"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2.5"/><path d="M5.5 8l2 2 3-4"/></svg></span>To do</h2><span class="sub" id="todo-sub"></span></div>
             <form class="add" id="add-form">
-              <label for="add-input" class="sr" hidden>New task</label>
               <input id="add-input" placeholder="Add a task, press Enter" autocomplete="off" aria-label="New task">
             </form>
             <div class="panel-body" id="todo"><div class="skel w80"></div><div class="skel w60"></div></div>
           </section>
         </div>
+      </div>
 
-        <div class="col c3">
+      <div class="board">
+        <div class="col">
           <section class="panel" aria-labelledby="h-mail">
             <div class="panel-head"><h2 id="h-mail">Inbox</h2><span class="sub">Unread · Primary</span></div>
             <div class="panel-body" id="mail"><div class="skel w80"></div><div class="skel w40"></div></div>
           </section>
+        </div>
+        <div class="col">
           <section class="panel" aria-labelledby="h-mtg">
             <div class="panel-head"><h2 id="h-mtg">Recent meeting notes</h2><span class="sub">Granola</span></div>
             <div class="panel-body" id="mtg"><div class="skel w60"></div><div class="skel w80"></div></div>
           </section>
+        </div>
+        <div class="col">
           <section class="panel" aria-labelledby="h-note">
             <div class="panel-head"><h2 id="h-note">Scratchpad</h2><span class="sub">Only you see this</span></div>
             <div class="panel-body">
@@ -302,6 +391,34 @@
           </section>
         </div>
       </div>
+    </section>
+
+    <section id="view-brief" hidden>
+      <div class="head">
+        <div>
+          <div class="eyebrow" id="bf-eyebrow">From Claude in Slack</div>
+          <h1>Morning brief</h1>
+        </div>
+        <div class="head-actions"><a class="btn" id="bf-open" href="https://slack.com" target="_blank" rel="noopener">Open in Slack</a></div>
+      </div>
+      <div class="bf-hero">
+        <div>
+          <div class="lead" id="bf-lead">Loading this morning's brief…</div>
+          <div class="meter" role="progressbar" aria-label="Brief items done" aria-valuemin="0" id="bf-meter"><i style="width:0"></i></div>
+        </div>
+        <div class="ring" id="bf-ring">–<small>done</small></div>
+      </div>
+      <div class="bf-cols">
+        <section class="panel cake" aria-labelledby="h-bf1">
+          <div class="panel-head"><h2 id="h-bf1"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5l1.6 4.1 4.4.3-3.4 2.8 1.1 4.3L8 10.6 4.3 13l1.1-4.3L2 5.9l4.4-.3z"/></svg></span>Claude's list</h2><span class="sub" id="bf1-sub"></span></div>
+          <div class="bf-list" id="bf-claude"><div class="skel w80"></div><div class="skel w60"></div></div>
+        </section>
+        <section class="panel cake" aria-labelledby="h-bf2">
+          <div class="panel-head"><h2 id="h-bf2"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2.5 4.5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7l-3 2.5V11.5h.5a2 2 0 0 1-2-2z"/></svg></span>People waiting on you</h2><span class="sub" id="bf2-sub">Slack DMs</span></div>
+          <div class="bf-list" id="bf-people"><div class="skel w80"></div></div>
+        </section>
+      </div>
+      <div class="state" id="bf-state" hidden></div>
     </section>
 
     <section id="view-week" hidden>
@@ -362,16 +479,18 @@
 
   /* ---------- routing ---------- */
   function route() {
-    const v = location.hash === '#week' ? 'week' : 'today';
+    const v = location.hash === '#week' ? 'week' : location.hash === '#brief' ? 'brief' : 'today';
     $('view-today').hidden = v !== 'today';
     $('view-week').hidden = v !== 'week';
+    $('view-brief').hidden = v !== 'brief';
     document.querySelectorAll('.nav a').forEach((a) => { if (a.dataset.view === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
   }
   window.addEventListener('hashchange', route);
   route();
 
   /* ---------- state ---------- */
-  const state = { events: null, weekEvents: null, issues: null, mail: null, meetings: null, myTasks: [], tasksReady: false };
+  const state = { events: null, weekEvents: null, issues: null, mail: null, meetings: null, myTasks: [], tasksReady: false,
+    slack: null, brief: null, checks: new Set() };
 
   /* ---------- connector error states ---------- */
   const AUTHZ = ['needs_reauth', 'server_not_connected', 'selection_required', 'blocked_by_policy', 'approval_required', 'not_in_manifest', 'not_granted', 'capability_disabled', 'capability_removed'];
@@ -659,25 +778,156 @@
     const text = typeof p === 'string' ? p : (p && typeof p.results === 'string') ? p.results : '';
     return text.split(/^### Result \d+ of \d+\s*$/m).slice(1).map((blk) => {
       const line = (k) => { const m = new RegExp('^' + k + ':\\s*(.*)$', 'm').exec(blk); return m ? m[1].trim() : ''; };
-      const from = line('From').replace(/\s*\(ID:[^)]*\).*$/, '').replace(/\s+/g, ' ');
+      const fromLine = line('From');
+      const from = fromLine.replace(/\s*<[^>]*>/, '').replace(/\s*\(ID:[^)]*\).*$/, '').replace(/\s+/g, ' ');
+      const fromId = (/\(ID:\s*([A-Z0-9]+)\)/.exec(fromLine) || [])[1] || '';
+      const people = [...line('Participants').matchAll(/\(ID:\s*([A-Z0-9]+)\)/g)].map((x) => x[1]);
+      const channel = (/\(ID:\s*([A-Z0-9]+)\)/.exec(line('Channel')) || [])[1] || '';
       const link = /\]\((https?:[^)]+)\)/.exec(line('Permalink'));
       const ti = blk.search(/^Text:/m);
       const body = ti < 0 ? null : [null, blk.slice(ti + 5).split(/\n---/)[0]];
       const t = line('Time');
       const at = t ? new Date(t.replace(/^(\S+) (\S+).*$/, '$1T$2')) : null;
-      return { from: from || 'Someone', url: link ? link[1].replace(/\\\//g, '/') : 'https://slack.com',
-        text: slackText(body ? body[1] : ''), at: at && !isNaN(at) ? at : null };
+      const raw = (body ? body[1] : '').trim();
+      return { from: from || 'Someone', fromId, people, channel, bot: /\[BOT\]/.test(fromLine), ts: line('Message_ts'),
+        url: link ? link[1].replace(/\\\//g, '/') : 'https://slack.com',
+        raw, text: slackText(raw), at: at && !isNaN(at) ? at : null };
     }).filter((m) => m.text);
   }
+  /* Slack text with its links kept: <url|label> becomes a real link, mentions become plain names. */
+  function richSlack(raw) {
+    const out = []; const re = /<([^>|]+)(?:\|([^>]+))?>/g; let last = 0, m;
+    const plain = (t) => t.replace(/[*_~`]/g, '');
+    while ((m = re.exec(raw))) {
+      if (m.index > last) out.push(plain(raw.slice(last, m.index)));
+      const target = m[1], label = m[2];
+      if (/^https?:/.test(target)) out.push(h('a', { href: target.replace(/\\\//g, '/'), target: '_blank', rel: 'noopener' }, plain(label || target)));
+      else out.push(label ? '@' + label : '@someone');
+      last = re.lastIndex;
+    }
+    if (last < raw.length) out.push(plain(raw.slice(last)));
+    return out;
+  }
+  const hash = (t) => { let x = 5381; for (let i = 0; i < t.length; i++) x = ((x << 5) + x + t.charCodeAt(i)) | 0; return (x >>> 0).toString(36); };
+
+  /* Who am I in Slack? The one person who is in every DM the search returned. */
+  function slackMe(list) {
+    let common = null;
+    for (const m of list) {
+      if (!m.people.length) continue;
+      common = common ? common.filter((id) => m.people.includes(id)) : [...m.people];
+    }
+    return common && common.length === 1 ? common[0] : null;
+  }
+  // A DM needs you when someone else asked for something and you haven't written in that chat since.
+  const ASKS = /\?|\b(can you|could you|would you|will you|please|pls|mind|when you (get|have)|need (you|your)|let me know|lmk|thoughts|take a look|review|approve|send me|ping me)\b/i;
+  function needsAction(m, me, list) {
+    if (!me || m.bot || m.fromId === me || !ASKS.test(m.text)) return false;
+    return !list.some((o) => o.channel === m.channel && o.fromId === me && o.at && m.at && o.at > m.at);
+  }
+  function peopleActions() {
+    const list = state.slack || [];
+    const me = slackMe(list);
+    return list.filter((m) => needsAction(m, me, list)).map((m) => ({ ...m, key: 'slk-' + (m.ts || hash(m.raw)).replace(/\W/g, '') }));
+  }
+
+  /* Checkmarks for brief items and Slack asks, saved per person (in memory if not signed in). */
+  let checksCol = null;
+  async function setCheck(key, done) {
+    if (done) state.checks.add(key); else state.checks.delete(key);
+    renderBrief(); renderSlack();
+    if (!checksCol) return;
+    try { done ? await checksCol.doc(key).set({ done: true, at: Date.now() }) : await checksCol.doc(key).delete(); }
+    catch (_) { if (done) state.checks.delete(key); else state.checks.add(key); renderBrief(); renderSlack(); }
+  }
+
   function renderSlack(errNode) {
     const box = $('slk');
     if (errNode) { box.replaceChildren(errNode); return; }
-    const list = state.slack || [];
+    if (!state.slack) return;
+    const list = state.slack;
     if (!list.length) { box.replaceChildren(h('div', { class: 'state' }, 'No DMs in the last 2 days.')); return; }
-    box.replaceChildren(...list.slice(0, 6).map((m) => h('a', { class: 'slk', href: m.url, target: '_blank', rel: 'noopener' },
-      h('div', { class: 'from' }, h('span', null, m.from),
-        m.at ? h('span', null, dayKey(m.at) === dayKey(today) ? fmtTime(m.at) : m.at.toLocaleDateString([], { month: 'short', day: 'numeric' })) : null),
-      h('div', { class: 'title' }, m.text))));
+    const acts = peopleActions();
+    const actKeys = new Map(acts.map((a) => [a.ts, a.key]));
+    const open = acts.filter((a) => !state.checks.has(a.key)).length;
+    $('slk-sub').textContent = open ? `${open} need you · DMs` : 'DMs · last 2 days';
+    const when = (m) => m.at ? h('span', null, dayKey(m.at) === dayKey(today) ? fmtTime(m.at) : m.at.toLocaleDateString([], { month: 'short', day: 'numeric' })) : null;
+    // Asks first, then the rest of the recent DMs (your own and Claude's left out).
+    const rest = list.filter((m) => !actKeys.has(m.ts) && !m.bot && m.fromId !== slackMe(list)).slice(0, 4);
+    box.replaceChildren(
+      ...acts.map((m) => {
+        const done = state.checks.has(m.key), id = 'cb-' + m.key;
+        return h('div', { class: 'slk-act' + (done ? ' done' : '') },
+          h('input', { type: 'checkbox', id, checked: done, 'aria-label': `Mark ${m.from}'s message handled`, onchange: (e) => setCheck(m.key, e.target.checked) }),
+          h('div', null,
+            h('div', { class: 'from' }, h('span', null, m.from, ' ', done ? null : h('span', { class: 'needs' }, 'Needs you')), when(m)),
+            h('a', { class: 'title', href: m.url, target: '_blank', rel: 'noopener' }, m.text)));
+      }),
+      ...rest.map((m) => h('a', { class: 'slk', href: m.url, target: '_blank', rel: 'noopener' },
+        h('div', { class: 'from' }, h('span', null, m.from), when(m)),
+        h('div', { class: 'title' }, m.text))));
+  }
+
+  /* ---------- Morning brief (Claude's 8:00 DM in Slack) ----------
+     The brief is a top message (one item per paragraph) plus a thread reply (a numbered list).
+     Each paragraph and each numbered line becomes its own checkable item. */
+  function parseBrief(msgs) {
+    const morning = msgs.filter((m) => m.bot && m.at && m.at >= today && m.at.getHours() < 12).sort((a, b) => a.at - b.at);
+    if (!morning.length) return null;
+    const top = [], list = [];
+    for (const m of morning) {
+      const numbered = m.raw.split('\n').filter((l) => /^\s*\d+\.\s+/.test(l));
+      if (numbered.length) numbered.forEach((l) => list.push(l.replace(/^\s*\d+\.\s+/, '').trim()));
+      else m.raw.split(/\n\s*\n/).map((p) => p.trim()).filter((p) => p && !/more are open|full list in the thread/i.test(p))
+        .forEach((p) => top.push(p.replace(/^first,? as promised:\s*/i, '').replace(/^\w/, (c) => c.toUpperCase())));
+    }
+    const day = dayKey(today);
+    const item = (raw, kind) => ({ raw, kind, key: 'bf-' + day.replace(/-/g, '') + '-' + hash(raw) });
+    return { at: morning[0].at, url: morning[0].url, items: [...top.map((r) => item(r, 'top')), ...list.map((r) => item(r, 'list'))] };
+  }
+  function renderBrief(errNode) {
+    const b = state.brief, ppl = state.slack ? peopleActions() : [];
+    const all = [...((b && b.items) || []), ...ppl];
+    const doneN = all.filter((x) => state.checks.has(x.key)).length;
+    const left = all.length - doneN;
+    const ready = state.brief !== null || errNode;
+    for (const el of [$('nav-bf'), $('s-bf')]) el.textContent = ready ? left : '–';
+    if (left) $('nav-bf').removeAttribute('data-zero'); else $('nav-bf').setAttribute('data-zero', '');
+    if (errNode) { $('bf-state').hidden = false; $('bf-state').replaceChildren(errNode); }
+    else $('bf-state').hidden = true;
+    if (!ready) return;
+    $('bf-ring').replaceChildren(`${doneN}/${all.length}`, h('small', null, 'done'));
+    const pct = all.length ? Math.round(doneN / all.length * 100) : 0;
+    $('bf-meter').firstChild.style.width = pct + '%';
+    $('bf-meter').setAttribute('aria-valuemax', String(all.length)); $('bf-meter').setAttribute('aria-valuenow', String(doneN));
+    if (b) {
+      $('bf-eyebrow').textContent = `From Claude in Slack · ${fmtTime(b.at)}`;
+      $('bf-open').href = b.url;
+      $('bf-lead').textContent = left === 0 ? 'All clear. Every item from this morning is checked off.'
+        : `${left} to go. Check items off as you finish them. They're saved for today.`;
+    } else if (!errNode) {
+      $('bf-lead').textContent = 'No morning brief from Claude yet today. It usually lands around 8:00.';
+    }
+    const card = (x, i, cls, tag) => {
+      const done = state.checks.has(x.key), id = 'cb-' + x.key;
+      return h('div', { class: 'bf ' + cls + (done ? ' done' : '') },
+        h('input', { type: 'checkbox', id, checked: done, 'aria-label': 'Done: ' + slackText(x.raw).slice(0, 80), onchange: (e) => setCheck(x.key, e.target.checked) }),
+        h('div', null,
+          h('div', { class: 'txt' }, ...richSlack(x.raw)),
+          h('div', { class: 'meta' }, tag)));
+    };
+    const items = (b && b.items) || [];
+    const c1 = items.filter((x) => !state.checks.has(x.key)).length;
+    $('bf1-sub').textContent = items.length ? `${c1} of ${items.length} left` : '';
+    $('bf-claude').replaceChildren(...(items.length
+      ? items.map((x, i) => card(x, i, x.kind === 'top' ? 'top' : '', h('span', { class: 'tag' }, x.kind === 'top' ? 'Top of mind' : `Thread · ${items.filter((y) => y.kind === 'list').indexOf(x) + 1}`)))
+      : [h('div', { class: 'state' }, b ? 'Nothing in today\'s brief.' : 'Waiting for today\'s brief.')]));
+    if (items.length && !c1) $('bf-claude').append(h('div', { class: 'yay' }, 'Brief cleared. Nice work.'));
+    const c2 = ppl.filter((x) => !state.checks.has(x.key)).length;
+    $('bf2-sub').textContent = ppl.length ? `${c2} of ${ppl.length} left` : 'Slack DMs';
+    $('bf-people').replaceChildren(...(ppl.length
+      ? ppl.map((x, i) => card(x, i, 'ppl', [h('span', { class: 'tag plum' }, x.from), x.at ? h('span', null, fmtTime(x.at)) : null, h('a', { href: x.url, target: '_blank', rel: 'noopener' }, 'Reply in Slack')]))
+      : [h('div', { class: 'state' }, state.slack ? 'Nobody is waiting on you in DMs right now.' : 'Loading Slack…')]));
   }
 
   /* ---------- Plan my day (Claude) ---------- */
@@ -756,6 +1006,11 @@ Last line: the one thing to finish before stopping.`;
       state.tasksReady = true;
       renderTodo(todoErr);
     }, () => { clearTimeout(loadTimer); state.tasksReady = true; renderTodo(todoErr); });
+    checksCol = db.collection(`data/users/${userId}/checks`);
+    checksCol.onSnapshot((snap) => {
+      state.checks = new Set(snap.docs.filter((d) => (d.data() || {}).done).map((d) => d.id));
+      renderBrief(); renderSlack();
+    }, () => {});
     noteRef = db.doc(`data/users/${userId}/notes/scratch`);
     noteRef.onSnapshot((snap) => {
       if (noteDirty) return;
@@ -769,7 +1024,7 @@ Last line: the one thing to finish before stopping.`;
     mcp = m;
     if (!m) {
       const msg = 'Live data shows when this page is open on claude.ai.';
-      ['sched', 'mail', 'mtg'].forEach((id) => noLive($(id), msg));
+      ['sched', 'mail', 'mtg', 'slk', 'bf-claude', 'bf-people'].forEach((id) => noLive($(id), msg));
       state.issues = []; renderTodo(); $('refresh').hidden = true;
       return;
     }
@@ -802,9 +1057,16 @@ Last line: the one thing to finish before stopping.`;
     const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     source({ server: 'Slack', tool: 'slack_search_public_and_private', dot: 'dot-slk',
       input: { filters: 'after:' + ymd(addDays(today, -2)), channel_types: 'im,mpim', natural_language_query: '', sort: 'timestamp',
-        limit: 10, include_bots: true, include_context: false, max_context_length: 300 },
-      onData: (p) => { state.slack = parseSlack(p); renderSlack(); },
+        limit: 20, include_bots: true, include_context: false, max_context_length: 300 },
+      onData: (p) => { state.slack = parseSlack(p); renderSlack(); renderBrief(); },
       onError: (node, authz) => { if (authz || !state.slack) { state.slack = null; renderSlack(node); } } });
+
+    // Claude's morning brief: its DMs to you since yesterday; parseBrief keeps today's morning ones.
+    source({ server: 'Slack', tool: 'slack_search_public_and_private', dot: 'dot-slk',
+      input: { filters: 'from:Claude after:' + ymd(addDays(today, -1)), channel_types: 'im', natural_language_query: '', sort: 'timestamp',
+        limit: 10, include_bots: true, include_context: false },
+      onData: (p) => { state.brief = parseBrief(parseSlack(p)) || false; renderBrief(); },
+      onError: (node, authz) => { if (authz || state.brief === null) renderBrief(node); } });
   });
 
   renderWeek();
