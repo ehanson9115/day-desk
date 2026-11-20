@@ -287,6 +287,17 @@
   .skel.w60 { width: 60% } .skel.w80 { width: 80% } .skel.w40 { width: 40% }
   .stale { font-size: 11px; color: var(--muted); }
 
+  /* Checked-off rows slide out, then a toast offers Undo for a few seconds. */
+  .leaving { opacity: 0; transform: translateX(8px); transition: opacity .2s ease, transform .2s ease; }
+  @media (prefers-reduced-motion: reduce) { .leaving { transition: none; transform: none; } }
+  .toast { position: fixed; left: 50%; bottom: max(20px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 10;
+    display: flex; align-items: center; gap: 14px; max-width: min(480px, calc(100vw - 32px)); padding: 10px 12px 10px 16px; border-radius: 6px;
+    background: var(--gray-12); color: var(--gray-1); font-size: 13.5px; font-weight: 500; box-shadow: 0 8px 24px -8px rgb(0 0 0 / .35); }
+  .toast[hidden] { display: none; }
+  .toast .msg { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .toast button { all: unset; cursor: pointer; font-weight: 600; color: inherit; text-decoration: underline; text-underline-offset: 2px; padding: 4px 6px; border-radius: 4px; flex: none; }
+  .toast button:focus-visible { outline: 2px solid currentColor; }
+
   /* Week view */
   .week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
   .day { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 10px; min-height: 220px; min-width: 0; }
@@ -324,6 +335,7 @@
 </style>
 
 <div class="glow" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden><span class="msg" id="toast-msg"></span><button type="button" id="toast-undo">Undo</button></div>
 <div class="shell">
   <aside class="rail">
     <div class="brand"><span class="brand-mark" aria-hidden="true">D</span>Day Desk</div>
@@ -548,6 +560,25 @@
   }
   function setDot(id, cls) { const d = $(id); if (d) d.className = 'dot ' + (cls || ''); }
 
+  /* ---------- check off = disappear ----------
+     Ticking a box slides the row out, saves it as done, and offers Undo for 6 seconds.
+     Counts and the brief meter still include checked items, so progress stays visible. */
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let toastTimer = null;
+  function showUndo(label, undo) {
+    clearTimeout(toastTimer);
+    $('toast-msg').textContent = 'Checked off: ' + label;
+    $('toast-undo').onclick = () => { $('toast').hidden = true; clearTimeout(toastTimer); undo(); };
+    $('toast').hidden = false;
+    toastTimer = setTimeout(() => { $('toast').hidden = true; }, 6000);
+  }
+  function checkOff(e, label, apply) {
+    if (!e.target.checked) { apply(false); return; }
+    const row = e.target.closest('.item, .slk-act, .gh, .bf');
+    if (row) row.classList.add('leaving');
+    setTimeout(() => { apply(true); showUndo(label, () => apply(false)); }, reduceMotion.matches ? 0 : 200);
+  }
+
   /* ---------- MCP wiring ---------- */
   let mcp = null;
   const unsubs = [];
@@ -697,7 +728,6 @@
     const box = $('todo');
     const all = rankTasks([...(state.issues || []), ...state.myTasks]);
     const open = all.filter((t) => !t.done);
-    const done = all.filter((t) => t.done);
     $('s-iss').textContent = state.issues ? state.issues.length : '–';
     $('todo-sub').textContent = `${open.length} open`;
     // How soon is it due? late = overdue or today, soon = next 3 days, week = next 7 days.
@@ -717,7 +747,7 @@
       const cbId = 'cb-' + t.key.replace(/[^a-z0-9]/gi, '');
       const u = urgency(t);
       return h('div', { class: 'item' + (t.done ? ' done' : '') + u.cls },
-        mine ? h('input', { type: 'checkbox', id: cbId, checked: t.done, 'aria-label': `Mark "${t.title}" done`, onchange: (e) => toggleTask(t, e.target.checked) })
+        mine ? h('input', { type: 'checkbox', id: cbId, checked: t.done, 'aria-label': `Mark "${t.title}" done`, onchange: (e) => checkOff(e, t.title, (d) => toggleTask(t, d)) })
              : h('span', { class: 'prio', 'data-p': String(t.priority || 0), title: 'Priority', 'aria-hidden': 'true' }, h('i'), h('i'), h('i')),
         h('div', null,
           mine ? h('label', { class: 'title', for: cbId }, t.title) : h('a', { class: 'title', href: t.url, target: '_blank', rel: 'noopener', style: 'color:inherit' }, t.title),
@@ -729,9 +759,8 @@
     };
     const kids = [];
     if (errNode) kids.push(errNode);
-    if (!all.length && state.issues && state.tasksReady) kids.push(h('div', { class: 'state' }, 'Nothing on your list. Add a task above.'));
+    if (!open.length && state.issues && state.tasksReady) kids.push(h('div', { class: 'state' }, 'Nothing on your list. Add a task above.'));
     kids.push(...open.map(row));
-    if (done.length) kids.push(h('div', { class: 'group-label' }, 'Done today'), ...done.map(row));
     if (!state.issues && !errNode) kids.push(h('div', { class: 'skel w60' }));
     box.replaceChildren(...kids);
   }
@@ -902,7 +931,7 @@
     if (!state.slack) return;
     const list = state.slack;
     if (!list.length) { box.replaceChildren(h('div', { class: 'state' }, 'No DMs in the last 2 days.')); return; }
-    const acts = peopleActions().filter((a) => !state.checks.has(a.key) || (a.at && a.at >= today));
+    const acts = peopleActions().filter((a) => !state.checks.has(a.key));
     const actKeys = new Map(acts.map((a) => [a.ts, a.key]));
     const open = acts.filter((a) => !state.checks.has(a.key)).length;
     $('slk-sub').textContent = open ? `${open} asks · last ${ASK_DAYS} days` : 'DMs · last 2 days';
@@ -913,7 +942,7 @@
       ...acts.map((m) => {
         const done = state.checks.has(m.key), id = 'cb-' + m.key;
         return h('div', { class: 'slk-act' + (done ? ' done' : '') },
-          h('input', { type: 'checkbox', id, checked: done, 'aria-label': `Mark ${m.from}'s message handled`, onchange: (e) => setCheck(m.key, e.target.checked) }),
+          h('input', { type: 'checkbox', id, checked: done, 'aria-label': `Mark ${m.from}'s message handled`, onchange: (e) => checkOff(e, `${m.from}'s message`, (d) => setCheck(m.key, d)) }),
           h('div', null,
             h('div', { class: 'from' }, h('span', null, m.from, m.chName ? ` in ${m.chName}` : '', ' ',
               done ? null : h('span', { class: 'needs' }, m.replied ? 'You replied' : 'Ask')), when(m)),
@@ -938,11 +967,13 @@
     if (!g.prs.length) { box.replaceChildren(h('div', { class: 'state' }, 'No open PRs for you in isapp.')); return; }
     const rank = { review: 0, mention: 1, mine: 2, repo: 3 };
     const prs = [...g.prs].sort((a, b) => ((rank[a.why] ?? 9) - (rank[b.why] ?? 9)) || String(b.updatedAt).localeCompare(String(a.updatedAt)));
-    box.replaceChildren(...prs.map((p) => {
+    const left = prs.filter((p) => !state.checks.has(ghKey(p)));
+    if (!left.length) { box.replaceChildren(h('div', { class: 'state' }, 'All caught up. Every PR here is checked off.')); return; }
+    box.replaceChildren(...left.map((p) => {
       const key = ghKey(p), done = state.checks.has(key), id = 'cb-' + key;
       const upd = p.updatedAt ? new Date(p.updatedAt) : null;
       return h('div', { class: 'gh' + (p.why === 'review' ? ' review' : '') + (done ? ' done' : '') },
-        h('input', { type: 'checkbox', id, checked: done, 'aria-label': `Mark ${p.repo} #${p.number} handled`, onchange: (e) => setCheck(key, e.target.checked) }),
+        h('input', { type: 'checkbox', id, checked: done, 'aria-label': `Mark ${p.repo} #${p.number} handled`, onchange: (e) => checkOff(e, `${p.repo} #${p.number}`, (d) => setCheck(key, d)) }),
         h('div', null,
           h('a', { class: 'title', href: p.url, target: '_blank', rel: 'noopener' }, p.title),
           h('div', { class: 'meta' },
@@ -998,7 +1029,7 @@
     const card = (x, i, cls, tag) => {
       const done = state.checks.has(x.key), id = 'cb-' + x.key;
       return h('div', { class: 'bf ' + cls + (done ? ' done' : '') },
-        h('input', { type: 'checkbox', id, checked: done, 'aria-label': 'Done: ' + slackText(x.raw).slice(0, 80), onchange: (e) => setCheck(x.key, e.target.checked) }),
+        h('input', { type: 'checkbox', id, checked: done, 'aria-label': 'Done: ' + slackText(x.raw).slice(0, 80), onchange: (e) => checkOff(e, slackText(x.raw).slice(0, 60), (d) => setCheck(x.key, d)) }),
         h('div', null,
           h('div', { class: 'txt' }, ...richSlack(x.raw)),
           h('div', { class: 'meta' }, tag)));
@@ -1007,13 +1038,15 @@
     const c1 = items.filter((x) => !state.checks.has(x.key)).length;
     $('bf1-sub').textContent = items.length ? `${c1} of ${items.length} left` : '';
     $('bf-claude').replaceChildren(...(items.length
-      ? items.map((x, i) => card(x, i, x.kind === 'top' ? 'top' : '', h('span', { class: 'tag' }, x.kind === 'top' ? 'Top of mind' : `Thread · ${items.filter((y) => y.kind === 'list').indexOf(x) + 1}`)))
+      ? items.filter((x) => !state.checks.has(x.key)).map((x, i) => card(x, i, x.kind === 'top' ? 'top' : '', h('span', { class: 'tag' }, x.kind === 'top' ? 'Top of mind' : `Thread · ${items.filter((y) => y.kind === 'list').indexOf(x) + 1}`)))
       : [h('div', { class: 'state' }, b ? 'Nothing in today\'s brief.' : 'Waiting for today\'s brief.')]));
     if (items.length && !c1) $('bf-claude').append(h('div', { class: 'yay' }, 'Brief cleared. Nice work.'));
     const c2 = ppl.filter((x) => !state.checks.has(x.key)).length;
     $('bf2-sub').textContent = ppl.length ? `${c2} of ${ppl.length} left` : 'Slack · last 7 days';
-    $('bf-people').replaceChildren(...(ppl.length
-      ? ppl.map((x, i) => card(x, i, 'ppl', [h('span', { class: 'tag plum' }, x.from + (x.chName ? ' · ' + x.chName : '')), x.at ? h('span', null, dayKey(x.at) === dayKey(today) ? fmtTime(x.at) : x.at.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })) : null, x.replied ? h('span', null, 'You replied') : null, h('a', { href: x.url, target: '_blank', rel: 'noopener' }, 'Reply in Slack')]))
+    $('bf-people').replaceChildren(...(ppl.length && !c2
+      ? [h('div', { class: 'yay' }, 'Every ask is handled. Nice work.')]
+      : ppl.length
+      ? ppl.filter((x) => !state.checks.has(x.key)).map((x, i) => card(x, i, 'ppl', [h('span', { class: 'tag plum' }, x.from + (x.chName ? ' · ' + x.chName : '')), x.at ? h('span', null, dayKey(x.at) === dayKey(today) ? fmtTime(x.at) : x.at.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })) : null, x.replied ? h('span', null, 'You replied') : null, h('a', { href: x.url, target: '_blank', rel: 'noopener' }, 'Reply in Slack')]))
       : [h('div', { class: 'state' }, state.slack ? 'No questions or asks for you in Slack this week.' : 'Loading Slack…')]));
   }
 
