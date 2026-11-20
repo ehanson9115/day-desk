@@ -131,7 +131,6 @@
   .stat.t-blue { --t-bg: var(--ht-status-info-wash); --t-line: var(--ht-status-info-line); --t-text: var(--ht-status-info-text); --t-strong: var(--ht-status-info-text); }
 
   .board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
-  .board + .board { margin-top: 16px; }
   .col { display: grid; gap: 16px; min-width: 0; }
   .panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; min-width: 0; box-shadow: 0 1px 2px color-mix(in oklab, var(--pink-9) 8%, transparent), 0 12px 28px -18px color-mix(in oklab, var(--pink-9) 35%, transparent); }
   /* Cake header: a tinted band on top of the card */
@@ -350,11 +349,19 @@
             <div class="allday" id="allday"></div>
             <div class="panel-body" id="sched"><div class="skel w80"></div><div class="skel w60"></div><div class="skel w80"></div></div>
           </section>
+          <section class="panel" aria-labelledby="h-mtg">
+            <div class="panel-head"><h2 id="h-mtg">Recent meeting notes</h2><span class="sub">Granola</span></div>
+            <div class="panel-body" id="mtg"><div class="skel w60"></div><div class="skel w80"></div></div>
+          </section>
         </div>
         <div class="col">
           <section class="panel cake" aria-labelledby="h-slk">
             <div class="panel-head"><h2 id="h-slk"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2.5 4.5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H7l-3 2.5V11.5h.5a2 2 0 0 1-2-2z"/></svg></span>Slack</h2><span class="sub" id="slk-sub">DMs · last 2 days</span></div>
             <div class="panel-body" id="slk"><div class="skel w80"></div><div class="skel w60"></div></div>
+          </section>
+          <section class="panel" aria-labelledby="h-mail">
+            <div class="panel-head"><h2 id="h-mail">Inbox</h2><span class="sub">Unread · Primary</span></div>
+            <div class="panel-body" id="mail"><div class="skel w80"></div><div class="skel w40"></div></div>
           </section>
         </div>
         <div class="col">
@@ -365,23 +372,6 @@
             </form>
             <div class="panel-body" id="todo"><div class="skel w80"></div><div class="skel w60"></div></div>
           </section>
-        </div>
-      </div>
-
-      <div class="board">
-        <div class="col">
-          <section class="panel" aria-labelledby="h-mail">
-            <div class="panel-head"><h2 id="h-mail">Inbox</h2><span class="sub">Unread · Primary</span></div>
-            <div class="panel-body" id="mail"><div class="skel w80"></div><div class="skel w40"></div></div>
-          </section>
-        </div>
-        <div class="col">
-          <section class="panel" aria-labelledby="h-mtg">
-            <div class="panel-head"><h2 id="h-mtg">Recent meeting notes</h2><span class="sub">Granola</span></div>
-            <div class="panel-body" id="mtg"><div class="skel w60"></div><div class="skel w80"></div></div>
-          </section>
-        </div>
-        <div class="col">
           <section class="panel" aria-labelledby="h-note">
             <div class="panel-head"><h2 id="h-note">Scratchpad</h2><span class="sub">Only you see this</span></div>
             <div class="panel-body">
