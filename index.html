@@ -136,7 +136,12 @@
     background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; margin-bottom: 20px;
     display: grid; gap: 8px;
   }
-  .brief-text { white-space: pre-wrap; font-size: 14.5px; line-height: 1.55; max-width: 72ch; }
+  .brief-text { font-size: 14.5px; line-height: 1.55; max-width: 76ch; display: grid; gap: 4px; }
+  .brief-text .lead { margin-bottom: 6px; }
+  .brief-text .blk { display: grid; grid-template-columns: 104px minmax(0, 1fr); gap: 12px; }
+  .brief-text .blk b, .brief-text .end b { font-weight: 600; color: var(--fg); font-variant-numeric: tabular-nums; }
+  .brief-text .end { margin-top: 6px; }
+  .brief-text a { font-weight: 600; text-decoration: underline; text-decoration-color: var(--pink-6); text-underline-offset: 2px; }
   .brief-meta { font-size: 12.5px; color: var(--muted); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
   .stats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
@@ -1057,7 +1062,38 @@
       : [h('div', { class: 'state' }, state.slack ? 'No questions or asks for you in Slack this week.' : 'Loading Slack…')]));
   }
 
-  /* ---------- Plan my day (Claude) ---------- */
+  /* ---------- Plan my day (Claude) ----------
+     The plan comes back as plain text; render it so time blocks line up in a bold column and ticket IDs become links. */
+  function ticketUrl(id) {
+    const hit = (state.issues || []).find((i) => i.id === id);
+    if (hit && hit.url) return hit.url;
+    const any = (state.issues || []).find((i) => i.url && /linear\.app\/[^/]+\/issue\//.test(i.url));
+    return any ? any.url.replace(/issue\/.*$/, 'issue/' + id) : null;
+  }
+  function linkTickets(text) {
+    const out = []; const re = /\b([A-Z]{2,6}-\d+)\b/g; let last = 0, m;
+    while ((m = re.exec(text))) {
+      const url = ticketUrl(m[1]);
+      if (!url) continue;
+      if (m.index > last) out.push(text.slice(last, m.index));
+      out.push(h('a', { href: url, target: '_blank', rel: 'noopener' }, m[1]));
+      last = re.lastIndex;
+    }
+    out.push(text.slice(last));
+    return out;
+  }
+  function renderPlan(text) {
+    const box = $('brief-text');
+    const lines = String(text || '').split('\n').map((l) => l.trim()).filter(Boolean);
+    box.replaceChildren(...lines.map((line, i) => {
+      const t = /^(\d{1,2}(?::\d{2})?\s*(?:[ap]m)?\s*[–-]\s*\d{1,2}(?::\d{2})?\s*(?:[ap]m)?)\s*:?\s*(.*)$/i.exec(line);
+      if (t) return h('div', { class: 'blk' }, h('b', null, t[1].trim().replace(/\s*[–-]\s*/, '–')), h('span', null, ...linkTickets(t[2])));
+      const end = /^(finish before stopping|before you stop(?:ping)?|last thing)\s*:\s*(.*)$/i.exec(line);
+      if (end) return h('div', { class: 'end' }, h('b', null, end[1] + ': '), ...linkTickets(end[2]));
+      return h('div', { class: i === 0 ? 'lead' : '' }, ...linkTickets(line));
+    }));
+  }
+  /* ---------- end plan rendering ---------- */
   let sample = null, planAbort = null;
   $('brief-close').addEventListener('click', () => { $('brief').hidden = true; });
   $('plan').addEventListener('click', async () => {
@@ -1089,8 +1125,8 @@ Last line: the one thing to finish before stopping.`;
     $('brief-meta').textContent = 'Written by Claude from what\'s on this page';
     $('plan').disabled = true;
     try {
-      const r = await sample(prompt, { signal: planAbort.signal, cache: false, onText: ({ text }) => { $('brief-text').textContent = text; } });
-      $('brief-text').textContent = r.text;
+      const r = await sample(prompt, { signal: planAbort.signal, cache: false, onText: ({ text }) => { renderPlan(text); } });
+      renderPlan(r.text);
       $('brief-meta').textContent = `Written by Claude at ${fmtTime(new Date())} from what's on this page`;
     } catch (e) {
       if (e && e.code === 'cancelled') return;
@@ -1181,7 +1217,7 @@ Last line: the one thing to finish before stopping.`;
     $('saved').textContent = 'Sample mode: notes aren\'t saved';
     $('plan').addEventListener('click', () => {
       $('brief').hidden = false;
-      $('brief-text').textContent = 'A meeting-light afternoon with one long gap after lunch.\n12:00–2:00 Finish DEMO-9, the dark mode contrast pass. It\'s due today.\n3:00–4:00 Sketch the DEMO-14 empty states before critique feedback lands.\n4:30–5:15 Write the demo script and record the video.\nBefore you stop: ship DEMO-9.';
+      renderPlan('A meeting-light afternoon with one long gap after lunch.\n12:00–2:00 Finish DEMO-9, the dark mode contrast pass. It\'s due today.\n3:00–4:00 Sketch the DEMO-14 empty states before critique feedback lands.\n4:30–5:15 Write the demo script and record the video.\nBefore you stop: ship DEMO-9.');
       $('brief-meta').textContent = 'Sample plan. On claude.ai, Claude writes this from your real day.';
     });
     const banner = h('div', { class: 'state note', role: 'note', style: 'margin:0 0 16px' }, 'Sample data. Open Day Desk on claude.ai to see your own calendar, Slack, Linear, Gmail and GitHub.');
