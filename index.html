@@ -179,7 +179,8 @@
   .pill { font-size: 11px; font-weight: 500; padding: 1px 7px; border-radius: 999px; letter-spacing: .02em; }
   .pill.now { background: var(--accent); color: var(--on-accent); }
   .pill.next { background: var(--gray-4); color: var(--gray-12); }
-  .join { font-weight: 500; }
+  .join { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 6px; background: var(--accent); color: var(--on-accent); font-size: 12.5px; font-weight: 600; text-decoration: none; }
+  .join:hover { background: var(--accent-hover); text-decoration: none; }
 
   /* Each task is its own card. Colour = how soon it's due (the chip also says it in words). */
   #todo { display: flex; flex-direction: column; gap: 6px; }
@@ -663,8 +664,7 @@
               e.people > 1 ? h('span', null, `${e.people} people`) : null,
               e.tentative ? h('span', null, 'Not answered') : null,
               e.focus ? h('span', null, 'Focus time') : null,
-              e.join && !past ? h('a', { class: 'join', href: e.join, target: '_blank', rel: 'noopener' }, 'Join') : null,
-              e.link ? h('a', { href: e.link, target: '_blank', rel: 'noopener' }, 'Open') : null)));
+              e.join && !past ? h('a', { class: 'join', href: e.join, target: '_blank', rel: 'noopener', 'aria-label': `Join ${e.title}` }, 'Join') : null)));
       }));
     }
     const left = timed.filter((e) => e.end > now).length;
