@@ -23,7 +23,7 @@
   /* Layout: a quiet left rail + a three-column "today" board (schedule · to do · inbox), stacking to one column on phones. */
   :root {
     /* Pink theme: page, borders and washes are tints of the pink accent (Radix pink scale flips in dark). */
-    --bg: color-mix(in oklab, var(--gray-2) 50%, var(--gray-1));
+    --bg: color-mix(in oklab, var(--pink-2) 45%, #fff);
     --card: var(--ht-surface-card);
     --inset: var(--ht-surface-inset);
     --fg: var(--ht-text-body);
@@ -33,7 +33,7 @@
     --accent: var(--pink-11);
     --accent-hover: var(--pink-12);
     --accent-text: var(--pink-11);
-    --accent-wash: var(--pink-3);
+    --accent-wash: var(--pink-2);
     --on-accent: #fff;
     --cake: var(--pink-4);
     --cake-line: var(--pink-6);
@@ -71,10 +71,10 @@
   * { box-sizing: border-box; }
   /* Floating pink gradient behind everything */
   .glow { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-  .glow i { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .42; }
-  .glow i:nth-child(1) { width: 520px; height: 520px; left: -120px; top: -160px; background: var(--pink-6); }
-  .glow i:nth-child(2) { width: 460px; height: 460px; right: -100px; top: 18%; background: var(--gray-5); }
-  .glow i:nth-child(3) { width: 560px; height: 560px; left: 30%; bottom: -260px; background: var(--pink-4); }
+  .glow i { position: absolute; border-radius: 50%; filter: blur(90px); opacity: .35; }
+  .glow i:nth-child(1) { width: 520px; height: 520px; left: -120px; top: -160px; background: var(--pink-4); }
+  .glow i:nth-child(2) { width: 460px; height: 460px; right: -100px; top: 18%; background: var(--pink-3); }
+  .glow i:nth-child(3) { width: 560px; height: 560px; left: 30%; bottom: -260px; background: var(--pink-3); }
   .shell { position: relative; z-index: 1; }
   @media (prefers-reduced-motion: no-preference) {
     .glow i:nth-child(1) { animation: drift1 26s ease-in-out infinite alternate; }
@@ -105,7 +105,7 @@
   .nav a[aria-current="page"] { background: var(--card); color: var(--pink-12); font-weight: 500; box-shadow: 0 0 0 1px var(--line), 0 4px 12px -6px color-mix(in oklab, var(--pink-9) 40%, transparent); }
   .nav-label { font-size: 10.5px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 14px 10px 4px; }
   .badge { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-size: 11.5px; font-weight: 600; display: inline-grid; place-items: center; font-variant-numeric: tabular-nums; }
-  .badge[data-zero] { background: var(--pink-4); color: var(--pink-11); }
+  .badge[data-zero] { background: var(--pink-3); color: var(--pink-11); }
   .nav svg { width: 16px; height: 16px; flex: none; }
   .rail-foot { margin-top: auto; padding: 0 8px; font-size: 12.5px; color: var(--muted); display: grid; gap: 6px; }
   .src { display: flex; align-items: center; gap: 8px; }
@@ -118,7 +118,7 @@
   .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
   .eyebrow { font-size: 12.5px; color: var(--muted); letter-spacing: .02em; }
   h1 { font-size: 28px; font-weight: 500; letter-spacing: -.02em; margin: 2px 0 0; text-wrap: balance; }
-  h2 { font-size: 15px; font-weight: 500; margin: 0; }
+  h2 { font-size: 15px; font-weight: 600; margin: 0; letter-spacing: -.005em; }
   .head-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
   .btn {
@@ -155,7 +155,7 @@
 
   .board { display: grid; grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
   .col { display: grid; gap: 16px; min-width: 0; }
-  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 6px; min-width: 0; box-shadow: 0 1px 2px color-mix(in oklab, var(--pink-9) 8%, transparent), 0 12px 28px -18px color-mix(in oklab, var(--pink-9) 35%, transparent); }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 6px; min-width: 0; box-shadow: 0 1px 2px color-mix(in oklab, var(--pink-9) 6%, transparent), 0 8px 24px -20px color-mix(in oklab, var(--pink-9) 22%, transparent); }
   /* Cake header: a tinted band on top of the card */
   .panel.cake { overflow: hidden; }
   .panel.cake > .panel-head { background: var(--cake); border-bottom: 1px solid var(--cake-line); color: var(--cake-text); padding: 12px 16px; margin-bottom: 8px; }
@@ -163,7 +163,7 @@
   .panel.cake.collapsed > .panel-head { border-bottom: 0; margin-bottom: 0; padding-bottom: 12px; }
   .panel.cake.grey { --cake: var(--gray-2); --cake-line: var(--gray-4); --cake-text: var(--gray-12); }
   .panel.cake.grey > .panel-head .sub, .panel.cake.grey > .panel-head .fold svg { color: var(--gray-11); }
-  .panel.cake.grey .head-ico { color: var(--gray-11); }
+  .panel.cake.grey .head-ico { background: var(--pink-3); color: var(--pink-11); }
   .head-ico { width: 22px; height: 22px; border-radius: 6px; background: var(--card); color: var(--pink-11); display: inline-grid; place-items: center; flex: none; }
   .head-ico svg { width: 13px; height: 13px; }
   .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 16px 10px; }
@@ -189,7 +189,7 @@
   .ruler .hr b { position: absolute; left: 0; top: -9px; width: 34px; padding-right: 6px; background: var(--card);
     font-size: 12.5px; font-weight: 600; color: var(--gray-11); font-variant-numeric: tabular-nums; }
   .ruler .hr.half { border-top-style: dashed; border-top-color: color-mix(in oklab, var(--line) 60%, transparent); left: 52px; }
-  .ruler .past-wash { position: absolute; left: 52px; right: 0; top: 0; background: color-mix(in oklab, var(--gray-2) 70%, transparent); border-radius: 4px; }
+  .ruler .past-wash { position: absolute; left: 52px; right: 0; top: 0; background: color-mix(in oklab, var(--gray-2) 45%, transparent); border-radius: 4px; }
   .ruler .blk { position: absolute; left: 52px; right: 0; padding: 5px 8px; border-radius: 6px; overflow: hidden;
     background: var(--card); border: 1px solid var(--line-strong); display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }
   .ruler .blk .bt { min-width: 0; }
@@ -202,7 +202,7 @@
   .ruler .blk.tent { border-style: dashed; }
   .ruler .blk.past { background: transparent; border-color: var(--line); }
   .ruler .blk.past .tm, .ruler .blk.past .title { color: var(--muted); font-weight: 500; }
-  .ruler .blk.now { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; background: var(--pink-2); }
+  .ruler .blk.now { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; background: var(--pink-1); }
   .ruler .blk .join { flex: none; height: 22px; padding: 0 8px; }
   .ruler .now-line { position: absolute; left: 36px; right: 0; height: 0; border-top: 2px solid var(--accent); z-index: 3; pointer-events: none; }
   .ruler .now-line::before { content: ''; position: absolute; left: -4px; top: -5px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
@@ -225,8 +225,8 @@
   .pill.now { background: var(--accent); color: var(--on-accent); }
   .pill.next { background: var(--gray-4); color: var(--gray-12); }
   /* Join: outlined by default; solid only for the meeting that's on now or next. */
-  .join { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 6px; background: transparent; border: 1px solid var(--pink-6); color: var(--accent-text); font-size: 12.5px; font-weight: 600; text-decoration: none; }
-  .join:hover { background: var(--pink-2); text-decoration: none; }
+  .join { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 6px; background: transparent; border: 1px solid var(--pink-5); color: var(--accent-text); font-size: 12.5px; font-weight: 600; text-decoration: none; }
+  .join:hover { background: var(--pink-1); text-decoration: none; }
   .join.hot { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .join.hot:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
 
@@ -238,13 +238,13 @@
   .item, .slk, .slk-act, .gh, .bf, .mail, .mtg, .nav a, .btn, .join, .stat, .fold svg { transition: background-color .15s ease-out, border-color .15s ease-out, color .15s ease-out; }
   .slk-act:hover, .gh:hover, .bf:hover { border-color: var(--line-strong); }
   @media (prefers-reduced-motion: reduce) { .item, .slk, .slk-act, .gh, .bf, .mail, .mtg, .nav a, .btn, .join, .stat { transition: none; } }
-  .item.u-late { background: var(--pink-3); border-color: var(--pink-6); }
-  .item.u-soon { background: var(--pink-2); border-color: var(--pink-4); }
+  .item.u-late { background: var(--pink-2); border-color: var(--pink-5); }
+  .item.u-soon { background: color-mix(in oklab, var(--pink-2) 50%, var(--card)); border-color: var(--pink-4); }
   .item.u-week { background: var(--gray-2); border-color: var(--gray-5); }
   .item.done { background: var(--card); border-color: var(--line); }
   .due { font-size: 11px; font-weight: 500; border-radius: 4px; padding: 0 6px; white-space: nowrap; background: var(--ht-surface-component); color: var(--ht-text-secondary); }
   .u-late .due { background: var(--accent); color: var(--on-accent); }
-  .u-soon .due { background: var(--pink-4); color: var(--pink-12); }
+  .u-soon .due { background: var(--pink-3); color: var(--pink-12); }
   .u-week .due { background: var(--gray-4); color: var(--gray-12); }
   .item input[type=checkbox] { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--accent); }
   .item .title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
@@ -294,13 +294,13 @@
   .slk-act .title { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; color: var(--fg); }
   #gh { display: flex; flex-direction: column; gap: 6px; }
   .gh { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 10px; padding: 10px 10px 10px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); }
-  .gh.review { border-color: var(--pink-5); }
+  .gh.review { border-color: var(--pink-4); }
   .gh.done { background: var(--card); border-color: var(--line); }
   .gh.done .title { color: var(--muted); text-decoration: line-through; }
   .gh input { width: 16px; height: 16px; margin: 2px 0 0; accent-color: var(--accent); }
   .gh .title { font-size: 14px; font-weight: 600; color: var(--fg); overflow-wrap: anywhere; }
   .gh .meta { font-size: 12.5px; color: var(--muted); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .needs { font-size: 11px; font-weight: 600; color: var(--pink-11); background: var(--pink-4); border-radius: 4px; padding: 0 6px; }
+  .needs { font-size: 11px; font-weight: 600; color: var(--pink-11); background: var(--pink-3); border-radius: 4px; padding: 0 6px; }
 
   /* Morning brief view */
   .bf-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; margin-bottom: 20px; }
@@ -313,18 +313,18 @@
   .bf-list { display: flex; flex-direction: column; gap: 8px; padding: 0 10px 10px; }
   .bf { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; padding: 12px 12px 12px 10px; border-radius: 6px;
     background: var(--card); border: 1px solid var(--line); }
-  .bf.top { border-color: var(--pink-5); }
+  .bf.top { border-color: var(--pink-4); }
   .bf.done { background: var(--card); }
-  .bf .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11.5px; font-weight: 600; background: var(--pink-4); color: var(--pink-11); margin-top: 1px; }
+  .bf .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11.5px; font-weight: 600; background: var(--pink-3); color: var(--pink-11); margin-top: 1px; }
   .bf input { width: 18px; height: 18px; margin: 2px 0 0 2px; accent-color: var(--accent); cursor: pointer; }
   .bf .txt { font-size: 14px; line-height: 1.5; font-weight: 500; overflow-wrap: anywhere; }
   .bf .txt a { font-weight: 600; text-decoration: underline; text-decoration-color: var(--pink-6); text-underline-offset: 2px; }
   .bf .meta { font-size: 12.5px; color: var(--muted); margin-top: 4px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
   .bf.done .txt { color: var(--muted); text-decoration: line-through; }
   .bf.done .txt a { color: var(--muted); }
-  .tag { font-size: 11px; font-weight: 500; border-radius: 4px; padding: 0 6px; background: var(--pink-3); color: var(--pink-11); }
+  .tag { font-size: 11px; font-weight: 500; border-radius: 4px; padding: 0 6px; background: var(--pink-2); color: var(--pink-11); }
   .tag.plum { background: var(--gray-3); color: var(--gray-12); }
-  .yay { padding: 14px 12px; border-radius: 6px; background: var(--pink-3); color: var(--pink-12); font-size: 13.5px; font-weight: 500; margin: 0 10px 10px; }
+  .yay { padding: 14px 12px; border-radius: 6px; background: var(--pink-2); color: var(--pink-12); font-size: 13.5px; font-weight: 500; margin: 0 10px 10px; }
 
   textarea.scratch { width: 100%; min-height: 140px; resize: vertical; border: 1px solid var(--ht-border-component); border-radius: 6px; background: var(--ht-surface-input); padding: 10px; font-size: 14px; line-height: 1.5; }
   .saved { font-size: 12.5px; color: var(--muted); min-height: 18px; }
@@ -334,7 +334,7 @@
 
   .state { padding: 12px 8px 14px; font-size: 13.5px; color: var(--muted); display: grid; gap: 8px; justify-items: start; }
   .state.warn { color: var(--ht-status-warning-text); background: var(--ht-status-warning-wash); border-radius: 6px; margin: 0 8px 8px; }
-  .state.note { color: var(--fg); background: var(--gray-3); border: 1px solid var(--line); border-radius: 6px; margin: 0; padding: 10px 14px; }
+  .state.note { color: var(--muted); background: transparent; border: 1px dashed var(--line-strong); border-radius: 6px; margin: 0; padding: 8px 14px; font-size: 13px; }
   .state.bad { color: var(--ht-status-danger-text); background: var(--ht-status-danger-wash); border-radius: 6px; margin: 0 8px 8px; }
   .skel { height: 14px; border-radius: 4px; background: var(--ht-surface-component); margin: 10px 8px; }
   .skel.w60 { width: 60% } .skel.w80 { width: 80% } .skel.w40 { width: 40% }
@@ -403,20 +403,6 @@
   .summary b { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
   .sources { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
 
-  /* ---------- Waiting on you: one card per person ---------- */
-  .waiting { padding: 14px 16px 16px; margin-bottom: 16px; }
-  .wait-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-  .wait-head .sub { font-size: 12.5px; color: var(--muted); }
-  .people { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
-  .person { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 10px; align-items: start; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--card); }
-  .person .av { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--pink-3); color: var(--pink-11); font-size: 13px; font-weight: 600; }
-  .person .nm { font-size: 14.5px; font-weight: 600; overflow-wrap: anywhere; }
-  .person ul { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 3px; }
-  .person li { font-size: 13px; color: var(--muted); }
-  .person li a { color: var(--fg); }
-  .person li .when { font-variant-numeric: tabular-nums; }
-  .people .state { grid-column: 1 / -1; }
-
   /* ---------- Scratchpad list + bookmarks ---------- */
   #todo { margin-top: 10px; }
   .old-note { margin-top: 10px; padding: 10px 12px; border: 1px dashed var(--line-strong); border-radius: 6px; font-size: 13px; display: grid; gap: 8px; }
@@ -426,7 +412,7 @@
   .bm { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 6px 8px; border-radius: 6px; }
   .bm:hover { background: var(--ht-surface-component); }
   .bm .tile { width: 24px; height: 24px; border-radius: 6px; background: var(--gray-3); color: var(--gray-11); display: grid; place-items: center; font-size: 11.5px; font-weight: 600; }
-  .bm.artifact .tile { background: var(--pink-3); color: var(--pink-11); }
+  .bm.artifact .tile { background: var(--pink-2); color: var(--pink-11); }
   .bm a { color: var(--fg); font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
   .bm .host { display: block; font-size: 12px; color: var(--muted); font-weight: 400; }
   @media (max-width: 760px) {
@@ -472,11 +458,6 @@
         <div class="brief-meta"><span id="brief-meta">Written by Claude from what's on this page</span><button class="link-btn" id="brief-close" type="button">Hide</button></div>
       </div>
 
-
-      <section class="panel waiting" aria-labelledby="h-wait">
-        <div class="wait-head"><h2 id="h-wait">Waiting on you</h2><span class="sub" id="wait-sub"></span></div>
-        <div class="people" id="people"><div class="skel w60"></div></div>
-      </section>
 
       <div class="board">
         <div class="col">
@@ -836,7 +817,7 @@
   }
   // Slack, GitHub and the brief all add marks to the ruler, so they redraw it (once, batched).
   let rulerT = 0;
-  const refreshRuler = () => { clearTimeout(rulerT); rulerT = setTimeout(() => { renderSchedule(); renderPeople(); renderSummary(); }, 30); };
+  const refreshRuler = () => { clearTimeout(rulerT); rulerT = setTimeout(() => { renderSchedule(); renderSummary(); }, 30); };
   const addMins = (d, m) => new Date(d.getTime() + m * 60000);
 
   function renderSchedule() {
@@ -1340,55 +1321,6 @@ Last line: the one thing to finish before stopping.`;
         await captureLines(text); if (noteRef) await noteRef.set({ text: '', updatedAt: Date.now() }); } }, 'Turn into to-dos')));
   }
 
-  /* ---------- Waiting on you: everyone who needs something from you, grouped by person ---------- */
-  function waitingPeople() {
-    const byName = new Map();
-    const add = (name, item) => {
-      if (!name) return;
-      const k = name.trim().toLowerCase();
-      if (!byName.has(k)) byName.set(k, { name: name.trim(), items: [] });
-      byName.get(k).items.push(item);
-    };
-    if (state.slack) for (const m of peopleActions()) {
-      if (m.replied || state.checks.has(m.key)) continue;
-      add(m.from, { text: m.chName ? `Asked you in ${m.chName}` : 'Asked you in Slack', at: m.at, href: m.url });
-    }
-    const g = state.github;
-    if (g && Array.isArray(g.prs)) for (const p of g.prs) {
-      if (p.why !== 'review' || state.checks.has(ghKey(p))) continue;
-      add(p.author, { text: `Wants your review on ${p.repo} #${p.number}`, at: p.updatedAt ? new Date(p.updatedAt) : null, href: p.url });
-    }
-    for (const t of state.mail || []) {
-      const m = (t.messages && t.messages[t.messages.length - 1]) || {};
-      const raw = typeof m.sender === 'object' ? JSON.stringify(m.sender) : String(m.sender || '');
-      if (/no-?reply|notifications?@|mailer-daemon|calendar-notification/i.test(raw)) continue; // machines aren't waiting on you
-      const at = m.date ? new Date(m.date) : null;
-      add(senderName(m), { text: `Emailed you: ${m.subject || '(No subject)'}`, at: at && !isNaN(at) ? at : null, href: t.viewUrl || m.viewUrl || 'https://mail.google.com' });
-    }
-    const latest = (p) => Math.max(0, ...p.items.map((i) => (i.at ? +i.at : 0)));
-    return [...byName.values()].sort((a, b) => (b.items.length - a.items.length) || (latest(b) - latest(a)));
-  }
-  const whenText = (d) => !d ? '' : dayKey(d) === dayKey(today) ? fmtTime(d) : d.toLocaleDateString([], { month: 'short', day: 'numeric' });
-  function renderPeople() {
-    const box = $('people');
-    const ready = state.slack !== null || state.mail !== null || state.github;
-    if (!ready) return;
-    const ppl = waitingPeople();
-    $('wait-sub').textContent = ppl.length ? `${ppl.length} ${ppl.length === 1 ? 'person' : 'people'}` : '';
-    if (!ppl.length) { box.replaceChildren(h('div', { class: 'state' }, 'No one is waiting on you right now.')); return; }
-    box.replaceChildren(...ppl.slice(0, 8).map((p) => {
-      const initials = p.name.split(/\s+/).map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
-      return h('div', { class: 'person' },
-        h('span', { class: 'av', 'aria-hidden': 'true' }, initials || '?'),
-        h('div', null,
-          h('div', { class: 'nm' }, p.name),
-          h('ul', null, ...p.items.slice(0, 3).map((i) => h('li', null,
-            h('a', { href: i.href, target: '_blank', rel: 'noopener' }, i.text),
-            i.at ? h('span', { class: 'when' }, ', ' + whenText(i.at)) : null)),
-            p.items.length > 3 ? h('li', null, `and ${p.items.length - 3} more`) : null)));
-    }));
-  }
-
   /* ---------- One plain sentence under the date instead of pills ---------- */
   function renderSummary() {
     // Only one number up top: open Linear issues. Click jumps to the Linear panel.
@@ -1512,7 +1444,7 @@ Last line: the one thing to finish before stopping.`;
       $('brief-meta').textContent = 'Sample plan. On claude.ai, Claude writes this from your real day.';
     });
     const banner = h('div', { class: 'state note', role: 'note', style: 'margin:0 0 16px' }, 'Sample data. Open Day Desk on claude.ai to see your own calendar, Slack, Linear, Gmail and GitHub.');
-    $('view-today').insertBefore(banner, $('view-today').querySelector('.waiting'));
+    $('view-today').insertBefore(banner, $('view-today').querySelector('.board'));
 
     renderSchedule(); renderTodo(); renderMail(); renderMeetings(); renderSlack(); renderGitHub(); renderBrief(); renderWeek(); renderLinks();
   }
