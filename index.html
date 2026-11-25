@@ -370,6 +370,7 @@
       <div class="src"><span class="dot" id="dot-mail"></span>Gmail</div>
       <div class="src"><span class="dot" id="dot-gra"></span>Granola</div>
       <div class="src"><span class="dot" id="dot-slk"></span>Slack</div>
+      <div class="src" id="src-gh" title="Synced from your Mac every 30 minutes"><span class="dot" id="dot-gh"></span>GitHub</div>
     </div>
   </aside>
 
@@ -972,6 +973,9 @@
   function renderGitHub() {
     const box = $('gh'), g = state.github;
     if (g === undefined) return;
+    // Rail dot: green if the Mac synced in the last hour, amber if older, red if never.
+    const lastSync = g && g.syncedAt ? new Date(g.syncedAt).getTime() : NaN;
+    setDot('dot-gh', !g ? 'bad' : (Date.now() - lastSync < 60 * 60 * 1000 ? 'ok' : 'warn'));
     if (!g || !Array.isArray(g.prs)) { box.replaceChildren(h('div', { class: 'state' }, 'Waiting for the first sync from your Mac. It runs every 30 minutes while the Claude app is open.')); return; }
     const synced = g.syncedAt ? new Date(g.syncedAt) : null;
     const open = g.prs.filter((p) => !state.checks.has(ghKey(p))).length;
