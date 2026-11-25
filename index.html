@@ -153,7 +153,7 @@
   .stat.t-grey { --t-bg: var(--gray-3); --t-line: var(--gray-5); --t-text: var(--gray-11); --t-strong: var(--gray-12); }
   .stat.t-soft { --t-bg: var(--pink-2); --t-line: var(--pink-4); --t-text: var(--pink-11); --t-strong: var(--pink-12); }
 
-  .board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  .board { display: grid; grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
   .col { display: grid; gap: 16px; min-width: 0; }
   .panel { background: var(--card); border: 1px solid var(--line); border-radius: 6px; min-width: 0; box-shadow: 0 1px 2px color-mix(in oklab, var(--pink-9) 8%, transparent), 0 12px 28px -18px color-mix(in oklab, var(--pink-9) 35%, transparent); }
   /* Cake header: a tinted band on top of the card */
@@ -181,6 +181,46 @@
   .ev.past .title, .ev.past .t { color: var(--muted); font-weight: 400; }
   .ev.now { background: var(--accent-wash); border-radius: 6px; }
   .ev.now + .ev { border-top-color: transparent; }
+  /* ---------- The day as a ruler ----------
+     Hours down the left, meetings as blocks at their real time, a pink line for now,
+     and small marks in the gutter for asks / PR reviews / the brief, pinned to when they arrived. */
+  .ruler { position: relative; margin: 10px 8px 4px; }
+  .ruler .hr { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--line); }
+  .ruler .hr b { position: absolute; left: 0; top: -9px; width: 34px; padding-right: 6px; background: var(--card);
+    font-size: 12.5px; font-weight: 600; color: var(--gray-11); font-variant-numeric: tabular-nums; }
+  .ruler .hr.half { border-top-style: dashed; border-top-color: color-mix(in oklab, var(--line) 60%, transparent); left: 52px; }
+  .ruler .past-wash { position: absolute; left: 52px; right: 0; top: 0; background: color-mix(in oklab, var(--gray-2) 70%, transparent); border-radius: 4px; }
+  .ruler .blk { position: absolute; left: 52px; right: 0; padding: 5px 8px; border-radius: 6px; overflow: hidden;
+    background: var(--card); border: 1px solid var(--line-strong); display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; }
+  .ruler .blk .bt { min-width: 0; }
+  .ruler .blk .tm { display: block; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--fg); }
+  .ruler .blk .title { display: block; font-size: 13.5px; font-weight: 500; line-height: 1.3; overflow-wrap: anywhere; }
+  .ruler .blk .meta { display: block; font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .ruler .blk.short { align-items: center; padding-block: 2px; }
+  .ruler .blk.short .bt { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .ruler .blk.focus { background: repeating-linear-gradient(135deg, var(--gray-2) 0 6px, var(--card) 6px 12px); border-style: dashed; }
+  .ruler .blk.tent { border-style: dashed; }
+  .ruler .blk.past { background: transparent; border-color: var(--line); }
+  .ruler .blk.past .tm, .ruler .blk.past .title { color: var(--muted); font-weight: 500; }
+  .ruler .blk.now { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; background: var(--pink-2); }
+  .ruler .blk .join { flex: none; height: 22px; padding: 0 8px; }
+  .ruler .now-line { position: absolute; left: 36px; right: 0; height: 0; border-top: 2px solid var(--accent); z-index: 3; pointer-events: none; }
+  .ruler .now-line::before { content: ''; position: absolute; left: -4px; top: -5px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  /* Marks: one per thing that landed today, in the gutter between the hour and the blocks */
+  .ruler .mk { position: absolute; left: 39px; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; z-index: 4;
+    background: var(--accent); border: 2px solid var(--card); box-sizing: content-box; }
+  .ruler .mk.mk-pr { background: var(--card); border-color: var(--accent); box-sizing: border-box; width: 12px; height: 12px; margin-top: -6px; left: 38px; }
+  .ruler .mk.mk-brief { background: var(--gray-11); }
+  .ruler .mk:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .ruler .mk .tip { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: max-content; max-width: 240px;
+    background: var(--gray-12); color: var(--gray-1); font-size: 12.5px; line-height: 1.35; padding: 6px 8px; border-radius: 6px;
+    visibility: hidden; opacity: 0; z-index: 5; pointer-events: none; }
+  .ruler .mk:hover .tip, .ruler .mk:focus-visible .tip { visibility: visible; opacity: 1; }
+  .ruler-key { display: flex; gap: 14px; flex-wrap: wrap; padding: 6px 16px 10px; font-size: 12px; color: var(--muted); }
+  .ruler-key span { display: inline-flex; align-items: center; gap: 6px; }
+  .ruler-key i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; }
+  .ruler-key i.k-pr { background: transparent; border: 2px solid var(--accent); width: 6px; height: 6px; }
+  .ruler-key i.k-brief { background: var(--gray-11); }
   .pill { font-size: 11px; font-weight: 500; padding: 1px 7px; border-radius: 999px; letter-spacing: .02em; }
   .pill.now { background: var(--accent); color: var(--on-accent); }
   .pill.next { background: var(--gray-4); color: var(--gray-12); }
@@ -409,14 +449,6 @@
             <div class="allday" id="allday"></div>
             <div class="panel-body" id="sched"><div class="skel w80"></div><div class="skel w60"></div><div class="skel w80"></div></div>
           </section>
-          <section class="panel cake grey" aria-labelledby="h-mtg">
-            <div class="panel-head"><h2 id="h-mtg"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 2.5h6l2.5 2.5v8.5H4z"/><path d="M6 7.5h4.5M6 10h4.5"/></svg></span>Recent meeting notes</h2><span class="sub">Granola</span></div>
-            <div class="panel-body" id="mtg"><div class="skel w60"></div><div class="skel w80"></div></div>
-          </section>
-          <section class="panel cake grey" aria-labelledby="h-gh">
-            <div class="panel-head"><h2 id="h-gh"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="4.5" cy="3.5" r="1.5"/><circle cx="4.5" cy="12.5" r="1.5"/><circle cx="11.5" cy="12.5" r="1.5"/><path d="M4.5 5v6M11.5 11V7.5a2 2 0 0 0-2-2H7"/><path d="M8.5 4L7 5.5 8.5 7"/></svg></span>GitHub</h2><span class="sub" id="gh-sub">isapp + ht-design · open PRs</span></div>
-            <div class="panel-body" id="gh"><div class="skel w80"></div><div class="skel w60"></div></div>
-          </section>
         </div>
         <div class="col">
           <section class="panel cake grey" aria-labelledby="h-slk">
@@ -426,6 +458,14 @@
           <section class="panel cake grey" aria-labelledby="h-mail">
             <div class="panel-head"><h2 id="h-mail"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="3.5" width="12" height="9" rx="2"/><path d="M2.5 4.5L8 9l5.5-4.5"/></svg></span>Inbox</h2><span class="sub">Unread · Primary</span></div>
             <div class="panel-body" id="mail"><div class="skel w80"></div><div class="skel w40"></div></div>
+          </section>
+          <section class="panel cake grey" aria-labelledby="h-mtg">
+            <div class="panel-head"><h2 id="h-mtg"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 2.5h6l2.5 2.5v8.5H4z"/><path d="M6 7.5h4.5M6 10h4.5"/></svg></span>Recent meeting notes</h2><span class="sub">Granola</span></div>
+            <div class="panel-body" id="mtg"><div class="skel w60"></div><div class="skel w80"></div></div>
+          </section>
+          <section class="panel cake grey" aria-labelledby="h-gh">
+            <div class="panel-head"><h2 id="h-gh"><span class="head-ico"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="4.5" cy="3.5" r="1.5"/><circle cx="4.5" cy="12.5" r="1.5"/><circle cx="11.5" cy="12.5" r="1.5"/><path d="M4.5 5v6M11.5 11V7.5a2 2 0 0 0-2-2H7"/><path d="M8.5 4L7 5.5 8.5 7"/></svg></span>GitHub</h2><span class="sub" id="gh-sub">isapp + ht-design · open PRs</span></div>
+            <div class="panel-body" id="gh"><div class="skel w80"></div><div class="skel w60"></div></div>
           </section>
         </div>
         <div class="col">
@@ -654,6 +694,100 @@
     }).sort((a, b) => a.start - b.start);
   }
 
+  /* Things that landed today and still need you, pinned to the time they arrived. */
+  function railMarks() {
+    const out = [];
+    if (state.slack) for (const m of peopleActions()) {
+      if (!m.at || m.at < today || m.replied || state.checks.has(m.key)) continue;
+      out.push({ at: m.at, kind: 'ask', href: m.url, label: `${m.from} asked: ${m.text}` });
+    }
+    const g = state.github;
+    if (g && Array.isArray(g.prs)) for (const p of g.prs) {
+      const at = p.updatedAt ? new Date(p.updatedAt) : null;
+      if (!at || at < today || (p.why !== 'review' && p.why !== 'mention') || state.checks.has(ghKey(p))) continue;
+      out.push({ at, kind: 'pr', href: p.url, label: `${GH_WHY[p.why]}: ${p.repo} #${p.number}, ${p.title}` });
+    }
+    const b = state.brief;
+    if (b && b.at && b.items) {
+      const left = b.items.filter((x) => !state.checks.has(x.key)).length;
+      if (left) out.push({ at: b.at, kind: 'brief', href: '#brief', label: `Morning brief: ${left} item${left === 1 ? '' : 's'} left` });
+    }
+    return out;
+  }
+
+  const PX_PER_MIN = 64 / 60;
+  function buildRuler(timed, now) {
+    // Range: 8 AM to 6 PM, stretched to fit any meeting outside it.
+    let startH = 8, endH = 18;
+    for (const e of timed) { startH = Math.min(startH, e.start.getHours()); endH = Math.max(endH, Math.ceil(e.end.getHours() + e.end.getMinutes() / 60)); }
+    const base = new Date(today); base.setHours(startH, 0, 0, 0);
+    const y = (d) => Math.max(0, (d - base) / 60000 * PX_PER_MIN);
+    const height = (endH - startH) * 60 * PX_PER_MIN;
+    const box = h('div', { class: 'ruler', style: `height:${height}px`, role: 'list', 'aria-label': 'Today, hour by hour' });
+
+    const inRange = now >= base && now <= addMins(base, (endH - startH) * 60);
+    if (inRange) box.append(h('div', { class: 'past-wash', style: `height:${y(now)}px`, 'aria-hidden': 'true' }));
+    for (let hr = startH; hr <= endH; hr++) {
+      const d = new Date(base); d.setHours(hr);
+      const lab = d.toLocaleTimeString([], { hour: 'numeric' }).replace(/\s?[AP]M$/i, '');
+      box.append(h('div', { class: 'hr', style: `top:${y(d)}px`, 'aria-hidden': 'true' }, h('b', null, lab)));
+      if (hr < endH) box.append(h('div', { class: 'hr half', style: `top:${y(d) + 30 * PX_PER_MIN}px`, 'aria-hidden': 'true' }));
+    }
+
+    // Overlapping meetings share the width side by side.
+    const lanes = []; let cluster = [], clusterEnd = 0;
+    const flush = () => { const n = Math.max(...cluster.map((c) => c.lane)) + 1; cluster.forEach((c) => (c.of = n)); cluster = []; };
+    for (const e of timed) {
+      if (cluster.length && e.start >= clusterEnd) { flush(); lanes.length = 0; }
+      let lane = lanes.findIndex((end) => end <= e.start); if (lane < 0) lane = lanes.length;
+      lanes[lane] = e.end; clusterEnd = Math.max(clusterEnd, +e.end);
+      cluster.push(Object.assign(e, { lane }));
+    }
+    if (cluster.length) flush();
+
+    const nextIdx = timed.findIndex((e) => e.start > now);
+    if (!timed.length) box.append(h('div', { class: 'blk past', style: `top:${y(addMins(base, 60))}px`, role: 'listitem' }, h('span', { class: 'title' }, 'No meetings today. The whole day is yours.')));
+    timed.forEach((e, i) => {
+      const isNow = e.start <= now && e.end > now, past = e.end <= now, hot = isNow || i === nextIdx;
+      const mins = Math.round((e.end - e.start) / 60000), hgt = Math.max(mins * PX_PER_MIN - 2, 22), short = mins < 30;
+      const w = 100 / e.of, cls = ['blk', isNow && 'now', past && 'past', short && 'short', e.focus && 'focus', e.tentative && 'tent'].filter(Boolean).join(' ');
+      const meta = [e.people > 1 && `${e.people} people`, e.tentative && 'Not answered', e.focus && 'Focus time'].filter(Boolean).join(', ');
+      box.append(h('div', { class: cls, role: 'listitem', 'data-lane': e.lane, 'data-top': y(e.start) + 1,
+        style: `top:${y(e.start) + 1}px;min-height:${hgt}px;left:calc(52px + (100% - 52px) * ${e.lane * w / 100});width:calc((100% - 52px) * ${w / 100} - ${e.of > 1 ? 4 : 0}px)` },
+        h('span', { class: 'bt' },
+          h('span', { class: 'tm' }, `${fmtTime(e.start)}–${fmtTime(e.end)}`),
+          h('span', { class: 'title' }, e.title),
+          !short && meta ? h('span', { class: 'meta' }, meta) : null),
+        e.join && !past ? h('a', { class: 'join' + (hot ? ' hot' : ''), href: e.join, target: '_blank', rel: 'noopener', 'aria-label': `Join ${e.title}` }, 'Join') : null));
+    });
+
+    for (const m of railMarks()) {
+      const at = m.at < base ? base : m.at;
+      box.append(h('a', { class: 'mk mk-' + m.kind, href: m.href, role: 'listitem', 'aria-label': `${fmtTime(m.at)}, ${m.label}`,
+        style: `top:${y(at)}px`, ...(m.href && m.href[0] !== '#' ? { target: '_blank', rel: 'noopener' } : {}) },
+        h('span', { class: 'tip', 'aria-hidden': 'true' }, h('b', null, fmtTime(m.at) + ' '), m.label)));
+    }
+    if (inRange) box.append(h('div', { class: 'now-line', style: `top:${y(now)}px`, 'aria-hidden': 'true' }));
+
+    // A short meeting with a long title can need more room than its time slot.
+    // Push the next block in the same lane down rather than cut the title off.
+    // Always measured from each block's real start time, and redone when the column resizes.
+    const settle = () => {
+      const lastBottom = {};
+      box.querySelectorAll('.blk').forEach((b) => {
+        const l = b.dataset.lane, want = +b.dataset.top;
+        const top = lastBottom[l] != null ? Math.max(want, lastBottom[l] + 2) : want;
+        b.style.top = top + 'px'; lastBottom[l] = top + b.offsetHeight;
+      });
+    };
+    if (window.ResizeObserver) new ResizeObserver(settle).observe(box); else requestAnimationFrame(settle);
+    return box;
+  }
+  // Slack, GitHub and the brief all add marks to the ruler, so they redraw it (once, batched).
+  let rulerT = 0;
+  const refreshRuler = () => { clearTimeout(rulerT); rulerT = setTimeout(renderSchedule, 30); };
+  const addMins = (d, m) => new Date(d.getTime() + m * 60000);
+
   function renderSchedule() {
     const box = $('sched'), ad = $('allday');
     if (!state.events) return;
@@ -661,25 +795,9 @@
     const now = new Date();
     const timed = evs.filter((e) => !e.allDay);
     ad.replaceChildren(...evs.filter((e) => e.allDay).map((e) => h('span', { class: 'chip' }, e.title)));
-    if (!timed.length) { box.replaceChildren(h('div', { class: 'state' }, 'No meetings today. The whole day is yours.')); }
-    else {
-      const nextIdx = timed.findIndex((e) => e.start > now);
-      box.replaceChildren(...timed.map((e, i) => {
-        const isNow = e.start <= now && e.end > now;
-        const past = e.end <= now;
-        const mins = Math.round((e.end - e.start) / 60000);
-        return h('div', { class: 'ev' + (isNow ? ' now' : '') + (past ? ' past' : '') },
-          h('div', { class: 't' }, fmtTime(e.start), h('br'), h('span', null, fmtDur(mins))),
-          h('div', null,
-            h('div', { class: 'title' }, e.title),
-            h('div', { class: 'meta' },
-              isNow ? h('span', { class: 'pill now' }, 'NOW') : (i === nextIdx ? h('span', { class: 'pill next' }, 'NEXT') : null),
-              e.people > 1 ? h('span', null, `${e.people} people`) : null,
-              e.tentative ? h('span', null, 'Not answered') : null,
-              e.focus ? h('span', null, 'Focus time') : null,
-              e.join && !past ? h('a', { class: 'join' + (isNow || i === nextIdx ? ' hot' : ''), href: e.join, target: '_blank', rel: 'noopener', 'aria-label': `Join ${e.title}` }, 'Join') : null)));
-      }));
-    }
+    box.replaceChildren(buildRuler(timed, now));
+    if (!$('ruler-key')) box.after(h('div', { class: 'ruler-key', id: 'ruler-key', 'aria-hidden': 'true' },
+      h('span', null, h('i'), 'Ask for you'), h('span', null, h('i', { class: 'k-pr' }), 'PR review'), h('span', null, h('i', { class: 'k-brief' }), 'Morning brief')));
     const left = timed.filter((e) => e.end > now).length;
     $('s-meet').textContent = left;
     const busyNow = timed.find((e) => e.start <= now && e.end > now);
@@ -939,6 +1057,7 @@
   }
 
   function renderSlack(errNode) {
+    refreshRuler();
     const box = $('slk');
     if (errNode) { box.replaceChildren(errNode); return; }
     if (!state.slack) return;
@@ -971,6 +1090,7 @@
      and writes the result to your private doc data/users/<you>/github. This only reads that doc. */
   const GH_WHY = { review: 'Review requested', mine: 'Yours', mention: 'Mentions you', repo: 'Team' };
   function renderGitHub() {
+    refreshRuler();
     const box = $('gh'), g = state.github;
     if (g === undefined) return;
     // Rail dot: green if the Mac synced in the last hour, amber if older, red if never.
@@ -1020,6 +1140,7 @@
     return { at: morning[0].at, url: morning[0].url, items: [...top.map((r) => item(r, 'top')), ...list.map((r) => item(r, 'list'))] };
   }
   function renderBrief(errNode) {
+    refreshRuler();
     const b = state.brief, ppl = state.slack ? peopleActions() : [];
     const all = [...((b && b.items) || []), ...ppl];
     const doneN = all.filter((x) => state.checks.has(x.key)).length;
