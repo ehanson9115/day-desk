@@ -398,7 +398,8 @@
   .tabs .badge { margin-left: 0; }
   .top .skin { margin: 0; width: 132px; }
   main { max-width: 1480px; margin-inline: auto; }
-  .summary { margin: 6px 0 0; font-size: 15px; color: var(--muted); max-width: 72ch; }
+  .summary { display: inline-flex; gap: 5px; margin-top: 8px; padding: 3px 10px; border-radius: 999px; font-size: 13px; background: var(--gray-3); border: 1px solid var(--gray-5); color: var(--gray-11); }
+  .summary:hover { text-decoration: none; border-color: var(--gray-8); }
   .summary b { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
   .sources { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
 
@@ -456,7 +457,7 @@
       <div class="head">
         <div>
           <h1 id="today-title">Today</h1>
-          <p class="summary" id="summary" aria-live="polite"></p>
+          <a class="summary" id="summary" href="#h-lin" hidden></a>
         </div>
         <div class="head-actions">
           <button class="btn" id="refresh" type="button">
@@ -1390,24 +1391,10 @@ Last line: the one thing to finish before stopping.`;
 
   /* ---------- One plain sentence under the date instead of pills ---------- */
   function renderSummary() {
-    const out = [], now = new Date();
-    const b = (t) => h('b', null, String(t));
-    const timed = (state.events || []).filter((e) => !e.allDay);
-    if (state.events) {
-      const cur = timed.find((e) => e.start <= now && e.end > now), next = timed.find((e) => e.start > now);
-      const left = timed.filter((e) => e.end > now).length;
-      if (cur) out.push(['You\'re in ', b(cur.title), ' until ', b(fmtTime(cur.end)), '.']);
-      else if (next) out.push(['Free until ', b(fmtTime(next.start)), ', then ', b(next.title), '.']);
-      else out.push(['No more meetings today.']);
-      if (left > 1) out.push([b(left), left === 1 ? ' meeting left.' : ' meetings left.']);
-    }
-    const due = (state.issues || []).filter((t) => t.due && startOfDay(t.due) <= today).length;
-    if (due) out.push([b(due), due === 1 ? ' Linear ticket is due today or overdue.' : ' Linear tickets are due today or overdue.']);
-    const ppl = waitingPeople().length;
-    if (ppl) out.push([b(ppl), ppl === 1 ? ' person is waiting on you.' : ' people are waiting on you.']);
-    const mine = state.myTasks.filter((t) => !t.done).length;
-    if (mine) out.push([b(mine), mine === 1 ? ' to-do from your scratchpad.' : ' to-dos from your scratchpad.']);
-    $('summary').replaceChildren(...out.flatMap((parts, i) => (i ? [' '] : []).concat(parts)));
+    // Only one number up top: open Linear issues. Click jumps to the Linear panel.
+    const el = $('summary'), n = state.issues ? state.issues.filter((t) => !t.done).length : null;
+    el.hidden = n === null;
+    if (n !== null) el.replaceChildren(h('b', null, String(n)), n === 1 ? ' open issue' : ' open issues');
   }
 
   /* ---------- Bookmarks: your links, plus your Claude artifacts ---------- */
